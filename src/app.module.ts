@@ -22,15 +22,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_DB: Joi.string().required(),
 
-        REDIS_PASS: Joi.string().required(),
-        REDIS_URI: Joi.string().required(),
+        REDIS_HOST: Joi.string().required(),
+        REDIS_PORT: Joi.number().integer().required(),
 
         MAIL_TRANSPORT: Joi.string().required(),
         MAIL_HOST: Joi.string().required(),
         MAIL_USER: Joi.string().required(),
         MAIL_PASS: Joi.string().required(),
 
-        YANDEX_ACCES: Joi.string().required(),
+        YANDEX_ACCESS: Joi.string().required(),
         YANDEX_SECRET: Joi.string().required(),
         YANDEX_BUCKET: Joi.string().required(),
       }),
@@ -42,7 +42,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       useFactory: async (config: ConfigService) => {
         const store = await redisStore({
           ttl: 3 * 60 * 1000,
-          url: config.get('REDIS_URI'),
+          socket: {
+            host: config.get('REDIS_HOST'),
+            port: config.get('REDIS_PORT'),
+          },
         });
         return { store };
       },
