@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import { OtpMailDto } from './dto/otp-mail.dto';
+import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class MailService {
@@ -17,6 +18,7 @@ export class MailService {
     },
   });
 
+  @OnEvent('send_activation_email')
   sendActivationMail(dto: OtpMailDto) {
     this.transporter.sendMail({
       to: dto.to,
