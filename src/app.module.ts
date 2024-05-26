@@ -7,6 +7,7 @@ import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // import { GraphQLModule } from '@nestjs/graphql';
 // import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         synchronize: true,
       }),
     }),
+    MailModule,
     // GraphQLModule.forRoot<ApolloDriverConfig>({
     //   driver: ApolloDriver,
     //   autoSchemaFile: 'src/schema.gql',
