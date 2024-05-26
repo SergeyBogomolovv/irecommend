@@ -9,6 +9,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { MailModule } from './mail/mail.module';
 import { AuthModule } from './auth/auth.module';
+import { Comment } from '@app/shared/entities/comments.entity';
+import { Contact } from '@app/shared/entities/contact.entity';
+import { FriendRequest } from '@app/shared/entities/friend-request.entity';
+import { Image } from '@app/shared/entities/image.entity';
+import { Logo } from '@app/shared/entities/logo.entity';
+import { Profile } from '@app/shared/entities/profile.entity';
+import { User } from '@app/shared/entities/user.entity';
+import { Recommendation } from '@app/shared/entities/recommendation.entity';
 
 @Module({
   imports: [
@@ -38,13 +46,13 @@ import { AuthModule } from './auth/auth.module';
         YANDEX_BUCKET: Joi.string().required(),
       }),
     }),
-    EventEmitterModule.forRoot(),
+    EventEmitterModule.forRoot({ global: true }),
     CacheModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => {
         const store = await redisStore({
-          ttl: 3 * 60 * 1000,
+          ttl: 0,
           socket: {
             host: config.get('REDIS_HOST'),
             port: config.get('REDIS_PORT'),
@@ -64,7 +72,16 @@ import { AuthModule } from './auth/auth.module';
         username: config.get('POSTGRES_USER'),
         password: config.get('POSTGRES_PASSWORD'),
         host: config.get('POSTGRES_HOST'),
-        entities: [],
+        entities: [
+          Comment,
+          Contact,
+          FriendRequest,
+          Image,
+          Logo,
+          Profile,
+          User,
+          Recommendation,
+        ],
         synchronize: true,
       }),
     }),

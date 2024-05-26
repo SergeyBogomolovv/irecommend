@@ -17,18 +17,18 @@ export class Profile {
   @Field(() => ID)
   readonly id: string;
 
-  @Column({ unique: true })
+  @Column()
   @Field()
-  readonly name: string;
+  name: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  readonly about?: string;
+  about?: string;
 
   @OneToOne(() => Logo, { nullable: true, cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   @Field(() => Logo, { nullable: true })
-  readonly logo?: string;
+  logo?: string;
 
   @OneToMany(() => Contact, (contacts) => contacts.profile, {
     cascade: true,

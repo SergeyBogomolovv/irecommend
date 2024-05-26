@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  HttpStatus,
-  Res,
-  Req,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpStatus, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -14,9 +6,10 @@ import { VerifyAccountDto } from './dto/verify.dto';
 import { PasswordResetRequestDto } from './dto/password-reset-request.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PasswordResetDto } from './dto/password-reset.dto';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { AccessTokenResponse } from './response/access.response';
 import { MessageResponse } from './response/message.response';
+import { Cookie } from '@app/shared/decorators/cookies.decorator';
 
 @ApiTags('Авторизация')
 @Controller('auth')
@@ -77,8 +70,8 @@ export class AuthController {
   })
   @ApiResponse({ status: HttpStatus.CREATED, type: AccessTokenResponse })
   @Get('refresh')
-  refresh(@Req() request: Request) {
-    return this.authService.refresh(request);
+  refresh(@Cookie('refresh_token') refreshToken: string) {
+    return this.authService.refresh(refreshToken);
   }
 
   @ApiOperation({
@@ -86,7 +79,10 @@ export class AuthController {
   })
   @ApiResponse({ status: HttpStatus.CREATED, type: MessageResponse })
   @Get('logout')
-  logout(@Res() response: Response) {
-    return this.authService.logout(response);
+  logout(
+    @Res() response: Response,
+    @Cookie('refresh_token') refreshToken: string,
+  ) {
+    return this.authService.logout(response, refreshToken);
   }
 }

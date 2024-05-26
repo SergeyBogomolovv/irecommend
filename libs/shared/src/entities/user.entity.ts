@@ -28,37 +28,37 @@ export class User {
 
   @Column({ unique: true })
   @Field()
-  readonly email: string;
+  email: string;
 
   @Column()
-  readonly password: string;
+  password: string;
 
   @Column({ type: 'boolean', default: false })
-  readonly verified: boolean;
+  verified: boolean;
 
   @OneToOne(() => Profile, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   @Field(() => Profile)
-  readonly profile: Profile;
+  profile: Profile;
 
   @ManyToMany(() => User)
   @JoinTable()
   @Field(() => [User])
-  readonly friends: User[];
+  friends: User[];
 
   @OneToMany(() => FriendRequest, (request) => request.sender)
   @Field(() => [FriendRequest])
-  readonly sendedFriendRequests: FriendRequest[];
+  sendedFriendRequests: FriendRequest[];
 
   @OneToMany(() => FriendRequest, (request) => request.recipient)
   @Field(() => [FriendRequest])
-  readonly receivedFriendRequests: FriendRequest[];
+  receivedFriendRequests: FriendRequest[];
 
   @OneToMany(() => Recommendation, (recommendation) => recommendation.author)
   @Field(() => [Recommendation])
-  readonly recommendations: Recommendation[];
+  recommendations: Recommendation[];
 
   @OneToMany(() => Comment, (comment) => comment.author)
   @Field(() => [Comment])
-  readonly comments: Comment[];
+  comments: Comment[];
 }

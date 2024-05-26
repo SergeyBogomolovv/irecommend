@@ -3,5 +3,5 @@ export class OtpMailDto {
     Object.assign(this, payload);
   }
   readonly to: string;
-  readonly code: number;
+  readonly code: string;
 }

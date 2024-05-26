@@ -18,15 +18,15 @@ export class Comment {
 
   @Column()
   @Field()
-  readonly content: string;
+  content: string;
 
   @ManyToOne(() => Recommendation, (recommendation) => recommendation.comments)
   @Field(() => Recommendation)
-  readonly recommendation: Recommendation;
+  recommendation: Recommendation;
 
   @ManyToOne(() => User, (user) => user.comments)
   @Field(() => User)
-  readonly author: User;
+  author: User;
 
   @CreateDateColumn()
   @Field(() => Date)

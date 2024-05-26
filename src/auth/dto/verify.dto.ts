@@ -9,5 +9,5 @@ export class VerifyAccountDto {
   @ApiProperty({ title: 'otp код', example: '456714' })
   @IsNumberString()
   @MinLength(6)
-  readonly code: number;
+  readonly code: string;
 }
