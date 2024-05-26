@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { ApiExceptionFilter } from '@app/shared/filters/api.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,10 +23,13 @@ async function bootstrap() {
     }),
   );
 
+  app.useGlobalFilters(new ApiExceptionFilter());
+
   const corsOptions = {
     origin: config.get('CLIENT_URL'),
     credentials: true,
   };
+
   app.use(cors(corsOptions));
   app.use(helmet());
 
