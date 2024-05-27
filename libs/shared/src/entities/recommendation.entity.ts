@@ -30,33 +30,33 @@ export class Recommendation {
 
   @Column()
   @Field()
-  readonly description: string;
+  description: string;
 
   @Column({ type: 'enum', enum: RecommendationType })
   @Field(() => RecommendationType)
-  readonly type: RecommendationType;
+  type: RecommendationType;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  readonly link?: string;
+  link?: string;
 
   @OneToMany(() => Image, (image) => image.recommendation, {
     cascade: true,
     onDelete: 'CASCADE',
   })
   @Field(() => [Image])
-  readonly images: Image[];
+  images: Image[];
 
   @OneToMany(() => Comment, (comment) => comment.recommendation, {
     cascade: true,
     onDelete: 'CASCADE',
   })
   @Field(() => [Comment])
-  readonly comments: Comment[];
+  comments: Comment[];
 
   @ManyToOne(() => User, (author) => author.recommendations)
   @Field(() => User)
-  readonly author: User;
+  author: User;
 
   @CreateDateColumn()
   @Field(() => Date)
