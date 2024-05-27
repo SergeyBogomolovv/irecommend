@@ -18,7 +18,6 @@ import { HashingService } from './services/hashing.service';
 import { OtpMailDto } from 'src/mail/dto/otp-mail.dto';
 import { OtpService } from './services/otp.service';
 import { MessageResponse } from './response/message.response';
-import { Profile } from '@app/shared/entities/profile.entity';
 import { TokenService } from './services/token.service';
 import { AccessTokenResponse } from './response/access.response';
 import { PasswordResetDto } from './dto/password-reset.dto';
@@ -66,11 +65,11 @@ export class AuthService {
       throw new ConflictException('Пользователь с такой почтой уже существует');
     }
     const hashedPassword = await this.hashingService.hash(dto.password);
-    const newUser = new User();
-    newUser.email = dto.email;
-    newUser.password = hashedPassword;
-    newUser.profile = new Profile();
-    newUser.profile.name = dto.name;
+    const newUser = this.userRepository.create({
+      email: dto.email,
+      password: hashedPassword,
+      profile: { name: dto.name },
+    });
     const code = await this.otpService.generateVerifyAccountOtp(newUser.email);
     this.eventEmitter.emit(
       'send_activation_email',
