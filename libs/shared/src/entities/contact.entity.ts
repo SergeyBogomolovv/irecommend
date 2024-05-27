@@ -21,9 +21,10 @@ export class Contact {
   url: string;
 
   @Column({ type: 'enum', enum: Contacts })
-  @Field(() => [Contacts])
+  @Field()
   type: Contacts;
 
   @ManyToOne(() => Profile, (profile) => profile.contacts)
+  @Field(() => Profile, { nullable: true })
   profile: Profile;
 }

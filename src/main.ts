@@ -2,15 +2,20 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
-import helmet from 'helmet';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ApiExceptionFilter } from '@app/shared/filters/api.filter';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+    }),
+  );
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -26,17 +31,16 @@ async function bootstrap() {
   app.useGlobalFilters(new ApiExceptionFilter());
 
   const corsOptions = {
-    origin: config.get('CLIENT_URL'),
+    origin: '*',
     credentials: true,
   };
 
   app.use(cors(corsOptions));
-  app.use(helmet());
 
   app.use(cookieParser());
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('IRecommned')
+    .setTitle('IRecommend')
     .setDescription('Api description for irecommend app')
     .setVersion('1.0')
     .addBearerAuth()

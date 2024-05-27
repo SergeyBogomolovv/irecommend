@@ -28,12 +28,12 @@ export class Profile {
   @OneToOne(() => Logo, { nullable: true, cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   @Field(() => Logo, { nullable: true })
-  logo?: string;
+  logo?: Logo;
 
   @OneToMany(() => Contact, (contacts) => contacts.profile, {
     cascade: true,
     onDelete: 'CASCADE',
   })
-  @Field(() => [Contact])
-  readonly contacts: Contact[];
+  @Field(() => [Contact], { nullable: true })
+  contacts: Contact[];
 }

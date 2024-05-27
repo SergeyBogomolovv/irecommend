@@ -14,6 +14,6 @@ export class Image {
   url: string;
 
   @ManyToOne(() => Recommendation, (recommendation) => recommendation.images)
-  @Field(() => Recommendation)
+  @Field(() => Recommendation, { nullable: true })
   recommendation: Recommendation;
 }

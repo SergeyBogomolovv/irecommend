@@ -15,8 +15,8 @@ import { FriendRequest } from './friend-request.entity';
 import { Recommendation } from './recommendation.entity';
 import { Comment } from './comments.entity';
 
-@ObjectType()
 @Entity()
+@ObjectType()
 export class User {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
@@ -31,34 +31,41 @@ export class User {
   email: string;
 
   @Column()
+  @Field()
   password: string;
 
   @Column({ type: 'boolean', default: false })
+  @Field(() => Boolean)
   verified: boolean;
 
   @OneToOne(() => Profile, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
-  @Field(() => Profile)
+  @Field(() => Profile, { nullable: true })
   profile: Profile;
 
   @ManyToMany(() => User)
   @JoinTable()
-  @Field(() => [User])
+  @Field(() => [User], { nullable: true })
   friends: User[];
 
   @OneToMany(() => FriendRequest, (request) => request.sender)
-  @Field(() => [FriendRequest])
+  @Field(() => [FriendRequest], { nullable: true })
   sendedFriendRequests: FriendRequest[];
 
   @OneToMany(() => FriendRequest, (request) => request.recipient)
-  @Field(() => [FriendRequest])
+  @Field(() => [FriendRequest], { nullable: true })
   receivedFriendRequests: FriendRequest[];
 
   @OneToMany(() => Recommendation, (recommendation) => recommendation.author)
-  @Field(() => [Recommendation])
+  @Field(() => [Recommendation], { nullable: true })
   recommendations: Recommendation[];
 
+  @ManyToMany(() => Recommendation)
+  @JoinTable()
+  @Field(() => [Recommendation], { nullable: true })
+  favorites: Recommendation[];
+
   @OneToMany(() => Comment, (comment) => comment.author)
-  @Field(() => [Comment])
+  @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 }

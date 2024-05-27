@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
+import { GqlAuthGuard } from './guards/gql-auth.guard';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import * as Joi from 'joi';
       }),
     }),
   ],
-  providers: [JwtAuthGuard],
+  providers: [GqlAuthGuard],
   exports: [JwtModule],
 })
 export class SharedModule {}

@@ -21,11 +21,11 @@ export class Comment {
   content: string;
 
   @ManyToOne(() => Recommendation, (recommendation) => recommendation.comments)
-  @Field(() => Recommendation)
+  @Field(() => Recommendation, { nullable: true })
   recommendation: Recommendation;
 
   @ManyToOne(() => User, (user) => user.comments)
-  @Field(() => User)
+  @Field(() => User, { nullable: true })
   author: User;
 
   @CreateDateColumn()

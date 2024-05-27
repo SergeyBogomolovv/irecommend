@@ -5,8 +5,8 @@ import { redisStore } from 'cache-manager-redis-yet';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { GraphQLModule } from '@nestjs/graphql';
-// import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { MailModule } from './mail/mail.module';
 import { AuthModule } from './auth/auth.module';
 import { Comment } from '@app/shared/entities/comments.entity';
@@ -17,6 +17,7 @@ import { Logo } from '@app/shared/entities/logo.entity';
 import { Profile } from '@app/shared/entities/profile.entity';
 import { User } from '@app/shared/entities/user.entity';
 import { Recommendation } from '@app/shared/entities/recommendation.entity';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -87,10 +88,11 @@ import { Recommendation } from '@app/shared/entities/recommendation.entity';
     }),
     MailModule,
     AuthModule,
-    // GraphQLModule.forRoot<ApolloDriverConfig>({
-    //   driver: ApolloDriver,
-    //   autoSchemaFile: 'src/schema.gql',
-    // }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: 'src/schema.gql',
+    }),
+    UsersModule,
   ],
 })
 export class AppModule {}
