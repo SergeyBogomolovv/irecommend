@@ -8,7 +8,7 @@ export class PasswordResetDto {
 
   @ApiProperty({ title: 'Код подтверждения', example: '457284' })
   @IsNumberString()
-  readonly code: number;
+  readonly code: string;
 
   @ApiProperty({ title: 'Новый пароль', example: '123456' })
   @IsString()

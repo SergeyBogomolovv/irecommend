@@ -173,8 +173,7 @@ export class MailService {
               </p>
               <div class="otp-code">${dto.code}</div>
               <p>
-                Если вы не хотели менять пароль на нашем сайте, просто проигнорируйте
-                это письмо.
+                Код действителен в течении 5 минут.
               </p>
             </div>
             <div class="footer">

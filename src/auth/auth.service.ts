@@ -21,6 +21,7 @@ import { MessageResponse } from './response/message.response';
 import { Profile } from '@app/shared/entities/profile.entity';
 import { TokenService } from './services/token.service';
 import { AccessTokenResponse } from './response/access.response';
+import { PasswordResetDto } from './dto/password-reset.dto';
 
 @Injectable()
 export class AuthService {
@@ -110,19 +111,41 @@ export class AuthService {
       .json(new AccessTokenResponse({ access_token }));
   }
 
-  passwordResetRequest(dto: PasswordResetRequestDto) {
-    return ``;
+  async passwordResetRequest(dto: PasswordResetRequestDto) {
+    const isUserExists = await this.userRepository.findOneBy({
+      email: dto.email,
+    });
+    if (!isUserExists) throw new BadRequestException('Аккаунт не найден');
+    const code = await this.otpService.generateResetPasswordOtp(
+      isUserExists.email,
+    );
+    this.eventEmitter.emit(
+      'send_password_reset_email',
+      new OtpMailDto({ to: dto.email, code }),
+    );
+    return new MessageResponse({
+      message: 'Письмо с кодом потдверждения было отправлено вам на почту',
+    });
   }
 
-  passwordReset(dto: PasswordResetRequestDto) {
-    return ``;
+  async passwordReset(dto: PasswordResetDto) {
+    const isCodeValid = await this.otpService.validateResetPasswordOtp(
+      dto.email,
+      dto.code,
+    );
+    if (!isCodeValid) throw new BadRequestException('Код неверный');
+    const user = await this.userRepository.findOneBy({ email: dto.email });
+    const hashedPassword = await this.hashingService.hash(dto.newPassword);
+    user.password = hashedPassword;
+    await this.userRepository.save(user);
+    return new MessageResponse({ message: 'Пароль успешно изменен' });
   }
 
   async refresh(refreshToken: string) {
     const token = await this.tokenService.getRefreshToken(refreshToken);
     if (!token) throw new UnauthorizedException('Token expired');
     const user = await this.userRepository.findOneBy({ id: token.userId });
-    const access_token = await this.tokenService.generateAccessToken(user);
+    const access_token = this.tokenService.generateAccessToken(user);
     return new AccessTokenResponse({ access_token });
   }
 

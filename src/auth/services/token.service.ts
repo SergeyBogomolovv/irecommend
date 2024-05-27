@@ -7,6 +7,7 @@ import { add } from 'date-fns';
 import { User } from '@app/shared/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { UserJwtPayload } from '@app/shared/types/user.payload';
+import { REFRESH_TOKEN_KEY } from '@app/shared/constants';
 
 @Injectable()
 export class TokenService {
@@ -22,7 +23,7 @@ export class TokenService {
       userId,
     });
     await this.cache.set(
-      `refreshToken:${refreshToken.token}`,
+      `${REFRESH_TOKEN_KEY}:${refreshToken.token}`,
       refreshToken,
       1000 * 3600 * 24 * 60,
     );
@@ -31,7 +32,7 @@ export class TokenService {
 
   async getRefreshToken(token: string) {
     const existingToken = await this.cache.get<RefreshToken>(
-      `refreshToken:${token}`,
+      `${REFRESH_TOKEN_KEY}:${token}`,
     );
     if (!existingToken) {
       return null;
@@ -44,7 +45,7 @@ export class TokenService {
   }
 
   async deleteRefreshToken(token: string) {
-    await this.cache.del(`refreshToken:${token}`);
+    await this.cache.del(`${REFRESH_TOKEN_KEY}:${token}`);
   }
 
   generateAccessToken(user: User) {
