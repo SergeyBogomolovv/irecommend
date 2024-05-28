@@ -5,6 +5,7 @@ import { User } from '@app/shared/entities/user.entity';
 import { UserFromGql } from '@app/shared/decorators/user-gql.decorator';
 import { GqlAuthGuard } from '@app/shared/guards/gql-auth.guard';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { GqlFields } from '@app/shared/decorators/gql-fields.decorator';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -12,8 +13,11 @@ export class UsersResolver {
 
   @UseGuards(GqlAuthGuard)
   @Query(() => User, { name: 'profile' })
-  getSelfProfile(@UserFromGql('id') id: string) {
-    return this.usersService.getFullUserInfo(id);
+  getSelfProfile(
+    @UserFromGql('id') id: string,
+    @GqlFields(true, 'profile') fields: string[],
+  ) {
+    return this.usersService.getFullUserInfo(id, fields);
   }
 
   @UseGuards(GqlAuthGuard)
