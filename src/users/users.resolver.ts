@@ -6,6 +6,8 @@ import { UserFromGql } from '@app/shared/decorators/user-gql.decorator';
 import { GqlAuthGuard } from '@app/shared/guards/gql-auth.guard';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { GqlRelations } from '@app/shared/decorators/gql-relations.decorator';
+import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
+
 @Resolver(() => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
@@ -24,7 +26,9 @@ export class UsersResolver {
   getUsersProfile(
     @UserFromGql('id') id: string,
     @Args('payload') payload: UpdateProfileDto,
+    @Args('file', { type: () => GraphQLUpload }) file: FileUpload,
   ) {
+    console.log(file);
     return this.usersService.updateProfile(id, payload);
   }
 }

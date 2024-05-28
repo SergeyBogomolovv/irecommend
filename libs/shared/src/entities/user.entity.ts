@@ -13,7 +13,6 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Profile } from './profile.entity';
 import { FriendRequest } from './friend-request.entity';
 import { Recommendation } from './recommendation.entity';
-import { Comment } from './comments.entity';
 
 @Entity()
 @ObjectType()
@@ -64,8 +63,4 @@ export class User {
   @JoinTable()
   @Field(() => [Recommendation], { nullable: true })
   favorites: Recommendation[];
-
-  @OneToMany(() => Comment, (comment) => comment.author)
-  @Field(() => [Comment], { nullable: true })
-  comments: Comment[];
 }

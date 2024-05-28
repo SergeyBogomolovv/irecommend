@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -24,7 +25,8 @@ export class Comment {
   @Field(() => Recommendation, { nullable: true })
   recommendation: Recommendation;
 
-  @ManyToOne(() => User, (user) => user.comments)
+  @ManyToOne(() => User)
+  @JoinColumn()
   @Field(() => User, { nullable: true })
   author: User;
 
