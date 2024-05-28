@@ -10,23 +10,10 @@ export class UsersService {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
 
-  async getFullUserInfo(id: string, fields: string[]) {
-    console.log(fields);
+  async getFullUserInfo(id: string, relations: string[]) {
     return this.usersRepository.findOne({
       where: { id },
-      relations: [
-        'friends.profile',
-        'favorites.images',
-        'favorites.author',
-        'profile.logo',
-        'profile.contacts',
-        'recommendations.comments',
-        'recommendations.images',
-        'sendedFriendRequests.sender.profile',
-        'sendedFriendRequests.recipient.profile',
-        'receivedFriendRequests.sender.profile',
-        'receivedFriendRequests.recipient.profile',
-      ],
+      relations,
     });
   }
 

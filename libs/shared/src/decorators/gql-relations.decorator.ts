@@ -7,22 +7,34 @@ import {
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
-export const GqlFields = (
-  deep: boolean = true,
-  parent: string | string[] = [],
-) => {
+export const GqlRelations = (parent: string | string[] = []) => {
   return createParamDecorator<
     {
-      deep: boolean;
       parent: string | string[];
     },
     ExecutionContext,
     string[]
-  >(({ deep, parent }, context) => {
+  >(({ parent }, context) => {
     const ctx = GqlExecutionContext.create(context);
     const info = ctx.getInfo();
-    return resolveFields(info, deep, parent);
-  })({ deep, parent });
+    return getRelations(resolveFields(info, true, parent));
+  })({ parent });
+};
+
+const getRelations = (fields: string[]) => {
+  return Array.from(
+    new Set(
+      fields
+        .map((field) => {
+          const words = field.split('.');
+          if (words.length >= 2) {
+            words.pop();
+            return words.join('.');
+          }
+        })
+        .filter((field) => field !== undefined),
+    ),
+  );
 };
 
 const resolveFields = (

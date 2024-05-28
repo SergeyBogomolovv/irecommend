@@ -6,6 +6,7 @@ import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ApiExceptionFilter } from '@app/shared/filters/api.filter';
+import { graphqlUploadExpress } from 'graphql-upload-ts';
 import helmet from 'helmet';
 
 async function bootstrap() {
@@ -16,7 +17,7 @@ async function bootstrap() {
       contentSecurityPolicy: false,
     }),
   );
-
+  app.use(graphqlUploadExpress());
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors) => {

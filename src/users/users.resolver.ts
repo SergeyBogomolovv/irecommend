@@ -5,8 +5,7 @@ import { User } from '@app/shared/entities/user.entity';
 import { UserFromGql } from '@app/shared/decorators/user-gql.decorator';
 import { GqlAuthGuard } from '@app/shared/guards/gql-auth.guard';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { GqlFields } from '@app/shared/decorators/gql-fields.decorator';
-
+import { GqlRelations } from '@app/shared/decorators/gql-relations.decorator';
 @Resolver(() => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
@@ -15,9 +14,9 @@ export class UsersResolver {
   @Query(() => User, { name: 'profile' })
   getSelfProfile(
     @UserFromGql('id') id: string,
-    @GqlFields(true, 'profile') fields: string[],
+    @GqlRelations('profile') relations: string[],
   ) {
-    return this.usersService.getFullUserInfo(id, fields);
+    return this.usersService.getFullUserInfo(id, relations);
   }
 
   @UseGuards(GqlAuthGuard)
