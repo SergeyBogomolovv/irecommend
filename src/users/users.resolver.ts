@@ -25,7 +25,8 @@ export class UsersResolver {
   updateProfile(
     @UserFromGql('id') id: string,
     @Args('payload') payload: UpdateProfileDto,
+    @GqlRelations('update_profile') relations: string[],
   ) {
-    return this.usersService.updateProfile(id, payload);
+    return this.usersService.updateProfile(id, payload, relations);
   }
 }

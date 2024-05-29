@@ -1,14 +1,6 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Contact } from './contact.entity';
-import { Logo } from './logo.entity';
 
 @ObjectType()
 @Entity()
@@ -25,10 +17,9 @@ export class Profile {
   @Field({ nullable: true })
   about?: string;
 
-  @OneToOne(() => Logo, { nullable: true, cascade: true, onDelete: 'CASCADE' })
-  @JoinColumn()
-  @Field(() => Logo, { nullable: true })
-  logo?: Logo;
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  logo?: string;
 
   @OneToMany(() => Contact, (contacts) => contacts.profile, {
     cascade: true,

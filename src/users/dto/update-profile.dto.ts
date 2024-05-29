@@ -9,5 +9,5 @@ export class UpdateProfileDto implements Partial<Profile> {
   @Field({ nullable: true })
   about?: string;
   @Field(() => GraphQLUpload, { nullable: true })
-  file: FileUpload;
+  file?: FileUpload;
 }

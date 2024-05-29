@@ -9,16 +9,11 @@ type Contact {
   profile: Profile
 }
 
-type Logo {
-  id: ID!
-  url: String!
-}
-
 type Profile {
   id: ID!
   name: String!
   about: String
-  logo: Logo
+  logo: String
   contacts: [Contact!]
 }
 
@@ -79,12 +74,12 @@ type Query {
 
 type Mutation {
   update_profile(payload: UpdateProfileDto!): User!
-  file_upload(file: Upload): String!
 }
 
 input UpdateProfileDto {
   name: String
   about: String
+  file: Upload
 }
 
 """The `Upload` scalar type represents a file upload."""
