@@ -18,6 +18,7 @@ import { User } from '@app/shared/entities/user.entity';
 import { Recommendation } from '@app/shared/entities/recommendation.entity';
 import { UsersModule } from './users/users.module';
 import { S3Module } from './s3/s3.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -93,6 +94,7 @@ import { S3Module } from './s3/s3.module';
     }),
     UsersModule,
     S3Module,
+    ProfileModule,
   ],
 })
 export class AppModule {}

@@ -69,7 +69,7 @@ type User {
 }
 
 type Query {
-  profile: User!
+  self_info: User!
 }
 
 type Mutation {
