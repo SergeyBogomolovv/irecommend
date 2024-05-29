@@ -2,22 +2,28 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ApiExceptionFilter } from '@app/shared/filters/api.filter';
-import { graphqlUploadExpress } from 'graphql-upload-ts';
 import helmet from 'helmet';
+import { graphqlUploadExpress } from 'graphql-upload-ts';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
+
   app.use(
     helmet({
       contentSecurityPolicy: false,
     }),
   );
-  app.use(graphqlUploadExpress());
+
+  app.use(
+    '/graphql',
+    graphqlUploadExpress({ maxFileSize: 50000000, maxFiles: 10 }),
+  );
+
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors) => {
@@ -32,7 +38,7 @@ async function bootstrap() {
   app.useGlobalFilters(new ApiExceptionFilter());
 
   const corsOptions = {
-    origin: '*',
+    origin: 'http://localhost:3000',
     credentials: true,
   };
 

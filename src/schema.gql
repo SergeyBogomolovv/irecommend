@@ -78,7 +78,8 @@ type Query {
 }
 
 type Mutation {
-  update_profile(payload: UpdateProfileDto!, file: Upload!): User!
+  update_profile(payload: UpdateProfileDto!): User!
+  file_upload(file: Upload): String!
 }
 
 input UpdateProfileDto {

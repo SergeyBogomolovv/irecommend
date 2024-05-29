@@ -18,6 +18,7 @@ import { Profile } from '@app/shared/entities/profile.entity';
 import { User } from '@app/shared/entities/user.entity';
 import { Recommendation } from '@app/shared/entities/recommendation.entity';
 import { UsersModule } from './users/users.module';
+import { S3Module } from './s3/s3.module';
 
 @Module({
   imports: [
@@ -93,6 +94,7 @@ import { UsersModule } from './users/users.module';
       autoSchemaFile: 'src/schema.gql',
     }),
     UsersModule,
+    S3Module,
   ],
 })
 export class AppModule {}
