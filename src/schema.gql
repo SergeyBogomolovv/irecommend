@@ -58,7 +58,6 @@ type User {
   id: ID!
   created_at: DateTime!
   email: String!
-  password: String!
   verified: Boolean!
   profile: Profile
   friends: [User!]

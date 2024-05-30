@@ -13,6 +13,7 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Profile } from './profile.entity';
 import { FriendRequest } from './friend-request.entity';
 import { Recommendation } from './recommendation.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 @ObjectType()
@@ -29,8 +30,8 @@ export class User {
   @Field()
   email: string;
 
+  @Exclude({ toPlainOnly: true })
   @Column()
-  @Field()
   password: string;
 
   @Column({ type: 'boolean', default: false })
