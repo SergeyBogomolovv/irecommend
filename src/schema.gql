@@ -74,6 +74,8 @@ type Query {
 
 type Mutation {
   update_profile(payload: UpdateProfileDto!): User!
+  add_contact(payload: AddContactDto!): Contact!
+  remove_contact(contactId: String!): String!
 }
 
 input UpdateProfileDto {
@@ -84,3 +86,8 @@ input UpdateProfileDto {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input AddContactDto {
+  url: String!
+  type: String!
+}

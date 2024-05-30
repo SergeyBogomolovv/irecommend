@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ConfigService } from '@nestjs/config';
@@ -6,11 +10,16 @@ import { S3Service } from 'src/s3/s3.service';
 import { User } from '@app/shared/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AddContactDto } from './dto/add-contact.dto';
+import { Contact, Contacts } from '@app/shared/entities/contact.entity';
 
 @Injectable()
 export class ProfileService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    @InjectRepository(Contact)
+    private readonly contactsRepository: Repository<Contact>,
+
     private readonly cloud: S3Service,
     private readonly config: ConfigService,
     private readonly eventEmitter: EventEmitter2,
@@ -41,5 +50,25 @@ export class ProfileService {
     }
     user.profile = { ...user.profile, ...payload, logo: newLogo };
     return await this.usersRepository.save(user);
+  }
+
+  async addContact(id: string, payload: AddContactDto) {
+    const user = await this.usersRepository.findOne({
+      where: { id },
+    });
+    const contact = new Contact();
+    contact.profile = user.profile;
+    try {
+      contact.type = Contacts[payload.type];
+    } catch (error) {
+      throw new BadRequestException('Вы указали неправильный тип контакта');
+    }
+    contact.url = payload.url;
+    return await this.contactsRepository.save(contact);
+  }
+
+  async removeContact(id: string) {
+    await this.contactsRepository.delete(id);
+    return 'Контакт успешно удален';
   }
 }

@@ -4,10 +4,10 @@ import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-import { ApiExceptionFilter } from '@app/shared/filters/api.filter';
 import helmet from 'helmet';
 import { graphqlUploadExpress } from 'graphql-upload-ts';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { ApiExceptionFilter } from '@app/shared/filters/api.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

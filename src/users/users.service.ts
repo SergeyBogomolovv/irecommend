@@ -10,7 +10,6 @@ export class UsersService {
   ) {}
 
   async findOne(id: string, relations: string[]) {
-    console.log(relations);
     return this.usersRepository.findOne({
       where: { id },
       relations,
