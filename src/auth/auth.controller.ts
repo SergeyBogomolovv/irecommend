@@ -7,9 +7,9 @@ import { PasswordResetRequestDto } from './dto/password-reset-request.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import { Response } from 'express';
-import { AccessTokenResponse } from './response/access.response';
-import { MessageResponse } from './response/message.response';
 import { Cookie } from '@app/shared/decorators/cookies.decorator';
+import { AccessTokenResponse } from '@app/shared/dto/access.response';
+import { MessageResponse } from '@app/shared/dto/message.response';
 
 @ApiTags('Авторизация')
 @Controller('auth')

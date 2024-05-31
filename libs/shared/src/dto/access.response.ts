@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AccessTokenResponse {
-  constructor(payload: AccessTokenResponse) {
-    Object.assign(this, payload);
+  constructor(access_token: string) {
+    this.access_token = access_token;
   }
   @ApiProperty({
     example:

@@ -67,6 +67,10 @@ type User {
   favorites: [Recommendation!]
 }
 
+type MessageResponse {
+  message: String!
+}
+
 type PublicUserResponse {
   id: ID!
   created_at: DateTime!
@@ -80,12 +84,8 @@ type PublicUserResponse {
   favorites: [Recommendation!]
 }
 
-type MessageResponse {
-  message: String!
-}
-
 type Query {
-  self_info: PublicUserResponse!
+  one_user(id: String!): PublicUserResponse!
   search_users(name: String!): [PublicUserResponse!]!
   profile: User!
 }
@@ -94,6 +94,10 @@ type Mutation {
   update_profile(payload: UpdateProfileDto!): User!
   add_contact(payload: AddContactDto!): MessageResponse!
   remove_contact(contactId: String!): MessageResponse!
+  send_friend_request(friendId: String!): MessageResponse!
+  decline_friend_request(requestId: String!): MessageResponse!
+  accept_friend_request(requestId: String!): MessageResponse!
+  delete_friend(friendId: String!): MessageResponse!
 }
 
 input UpdateProfileDto {

@@ -13,7 +13,7 @@ export class UsersService {
   ) {}
 
   async findOne(id: string, relations: string[]) {
-    const user = await this.usersRepository.findOne({
+    const user = await this.usersRepository.findOneOrFail({
       where: { id },
       relations,
     });

@@ -14,11 +14,15 @@ export class FriendRequest {
   @Field(() => ID)
   readonly id: string;
 
-  @ManyToOne(() => User, (user) => user.sendedFriendRequests)
+  @ManyToOne(() => User, (user) => user.sendedFriendRequests, {
+    cascade: true,
+  })
   @Field(() => User, { nullable: true })
   sender: User;
 
-  @ManyToOne(() => User, (user) => user.receivedFriendRequests)
+  @ManyToOne(() => User, (user) => user.receivedFriendRequests, {
+    cascade: true,
+  })
   @Field(() => User, { nullable: true })
   recipient: User;
 
