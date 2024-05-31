@@ -5,8 +5,15 @@
 type Contact {
   id: ID!
   url: String!
-  type: String!
+  type: Contacts!
   profile: Profile
+}
+
+enum Contacts {
+  TELEGRAM
+  INSTAGRAM
+  DISCORD
+  VK
 }
 
 type Profile {
@@ -111,5 +118,5 @@ scalar Upload
 
 input AddContactDto {
   url: String!
-  type: String!
+  type: Contacts!
 }

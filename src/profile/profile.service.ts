@@ -64,12 +64,8 @@ export class ProfileService {
       where: { id },
       relations: ['profile.contacts'],
     });
-    const type = Contacts[payload.type];
-    if (!type)
-      throw new BadRequestException('Вы указали неправильный тип контакта');
-    user.profile.contacts.push(
-      this.contactsRepository.create({ ...payload, type }),
-    );
+
+    user.profile.contacts.push(this.contactsRepository.create({ ...payload }));
     await this.usersRepository.save(user);
     return new MessageResponse('Контакт добавлен в ваш профиль');
   }
