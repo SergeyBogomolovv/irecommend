@@ -62,16 +62,15 @@ export class ProfileService {
   async addContact(id: string, payload: AddContactDto) {
     const user = await this.usersRepository.findOne({
       where: { id },
+      relations: ['profile.contacts'],
     });
     const type = Contacts[payload.type];
     if (!type)
       throw new BadRequestException('Вы указали неправильный тип контакта');
-
-    const contact = new Contact();
-    contact.profile = user.profile;
-    contact.type = type;
-    contact.url = payload.url;
-    await this.contactsRepository.save(contact);
+    user.profile.contacts.push(
+      this.contactsRepository.create({ ...payload, type }),
+    );
+    await this.usersRepository.save(user);
     return new MessageResponse('Контакт добавлен в ваш профиль');
   }
 
