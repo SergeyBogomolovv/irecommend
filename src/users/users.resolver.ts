@@ -1,4 +1,4 @@
-import { Resolver, Query } from '@nestjs/graphql';
+import { Resolver, Query, Args } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import {
   ClassSerializerInterceptor,
@@ -23,5 +23,13 @@ export class UsersResolver {
     @GqlRelations('self_info') relations: string[],
   ) {
     return this.usersService.findOne(id, relations);
+  }
+
+  @Query(() => [PublicUserResponse], { name: 'search_users' })
+  findManyByName(
+    @Args('name') name: string,
+    @GqlRelations('search_users') relations: string[],
+  ) {
+    return this.usersService.searchUsers(name, relations);
   }
 }

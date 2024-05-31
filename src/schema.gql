@@ -86,6 +86,7 @@ type MessageResponse {
 
 type Query {
   self_info: PublicUserResponse!
+  search_users(name: String!): [PublicUserResponse!]!
   profile: User!
 }
 
