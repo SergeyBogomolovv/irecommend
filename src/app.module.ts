@@ -5,18 +5,20 @@ import { redisStore } from 'cache-manager-redis-yet';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { GraphQLModule } from '@nestjs/graphql';
-// import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { MailModule } from './mail/mail.module';
 import { AuthModule } from './auth/auth.module';
 import { Comment } from '@app/shared/entities/comments.entity';
 import { Contact } from '@app/shared/entities/contact.entity';
 import { FriendRequest } from '@app/shared/entities/friend-request.entity';
 import { Image } from '@app/shared/entities/image.entity';
-import { Logo } from '@app/shared/entities/logo.entity';
 import { Profile } from '@app/shared/entities/profile.entity';
 import { User } from '@app/shared/entities/user.entity';
 import { Recommendation } from '@app/shared/entities/recommendation.entity';
+import { UsersModule } from './users/users.module';
+import { S3Module } from './s3/s3.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -44,6 +46,8 @@ import { Recommendation } from '@app/shared/entities/recommendation.entity';
         YANDEX_ACCESS: Joi.string().required(),
         YANDEX_SECRET: Joi.string().required(),
         YANDEX_BUCKET: Joi.string().required(),
+
+        CLIENT_URL: Joi.string().required(),
       }),
     }),
     EventEmitterModule.forRoot({ global: true }),
@@ -77,7 +81,6 @@ import { Recommendation } from '@app/shared/entities/recommendation.entity';
           Contact,
           FriendRequest,
           Image,
-          Logo,
           Profile,
           User,
           Recommendation,
@@ -85,12 +88,15 @@ import { Recommendation } from '@app/shared/entities/recommendation.entity';
         synchronize: true,
       }),
     }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: 'src/schema.gql',
+    }),
     MailModule,
     AuthModule,
-    // GraphQLModule.forRoot<ApolloDriverConfig>({
-    //   driver: ApolloDriver,
-    //   autoSchemaFile: 'src/schema.gql',
-    // }),
+    UsersModule,
+    S3Module,
+    ProfileModule,
   ],
 })
 export class AppModule {}

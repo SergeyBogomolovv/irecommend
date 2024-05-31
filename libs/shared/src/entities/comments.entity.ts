@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -21,11 +22,12 @@ export class Comment {
   content: string;
 
   @ManyToOne(() => Recommendation, (recommendation) => recommendation.comments)
-  @Field(() => Recommendation)
+  @Field(() => Recommendation, { nullable: true })
   recommendation: Recommendation;
 
-  @ManyToOne(() => User, (user) => user.comments)
-  @Field(() => User)
+  @ManyToOne(() => User)
+  @JoinColumn()
+  @Field(() => User, { nullable: true })
   author: User;
 
   @CreateDateColumn()

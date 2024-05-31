@@ -15,11 +15,11 @@ export class FriendRequest {
   readonly id: string;
 
   @ManyToOne(() => User, (user) => user.sendedFriendRequests)
-  @Field(() => User)
+  @Field(() => User, { nullable: true })
   sender: User;
 
   @ManyToOne(() => User, (user) => user.receivedFriendRequests)
-  @Field(() => User)
+  @Field(() => User, { nullable: true })
   recipient: User;
 
   @CreateDateColumn()

@@ -33,7 +33,7 @@ export class Recommendation {
   description: string;
 
   @Column({ type: 'enum', enum: RecommendationType })
-  @Field(() => RecommendationType)
+  @Field()
   type: RecommendationType;
 
   @Column({ nullable: true })
@@ -44,18 +44,18 @@ export class Recommendation {
     cascade: true,
     onDelete: 'CASCADE',
   })
-  @Field(() => [Image])
+  @Field(() => [Image], { nullable: true })
   images: Image[];
 
   @OneToMany(() => Comment, (comment) => comment.recommendation, {
     cascade: true,
     onDelete: 'CASCADE',
   })
-  @Field(() => [Comment])
+  @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 
   @ManyToOne(() => User, (author) => author.recommendations)
-  @Field(() => User)
+  @Field(() => User, { nullable: true })
   author: User;
 
   @CreateDateColumn()

@@ -13,10 +13,10 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Profile } from './profile.entity';
 import { FriendRequest } from './friend-request.entity';
 import { Recommendation } from './recommendation.entity';
-import { Comment } from './comments.entity';
+import { Exclude } from 'class-transformer';
 
-@ObjectType()
 @Entity()
+@ObjectType()
 export class User {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
@@ -27,38 +27,41 @@ export class User {
   readonly created_at: Date;
 
   @Column({ unique: true })
-  @Field()
+  @Field({ nullable: true })
   email: string;
 
+  @Exclude({ toPlainOnly: true })
   @Column()
   password: string;
 
   @Column({ type: 'boolean', default: false })
+  @Field(() => Boolean)
   verified: boolean;
 
   @OneToOne(() => Profile, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
-  @Field(() => Profile)
+  @Field(() => Profile, { nullable: true })
   profile: Profile;
 
   @ManyToMany(() => User)
   @JoinTable()
-  @Field(() => [User])
+  @Field(() => [User], { nullable: true })
   friends: User[];
 
   @OneToMany(() => FriendRequest, (request) => request.sender)
-  @Field(() => [FriendRequest])
+  @Field(() => [FriendRequest], { nullable: true })
   sendedFriendRequests: FriendRequest[];
 
   @OneToMany(() => FriendRequest, (request) => request.recipient)
-  @Field(() => [FriendRequest])
+  @Field(() => [FriendRequest], { nullable: true })
   receivedFriendRequests: FriendRequest[];
 
   @OneToMany(() => Recommendation, (recommendation) => recommendation.author)
-  @Field(() => [Recommendation])
+  @Field(() => [Recommendation], { nullable: true })
   recommendations: Recommendation[];
 
-  @OneToMany(() => Comment, (comment) => comment.author)
-  @Field(() => [Comment])
-  comments: Comment[];
+  @ManyToMany(() => Recommendation)
+  @JoinTable()
+  @Field(() => [Recommendation], { nullable: true })
+  favorites: Recommendation[];
 }

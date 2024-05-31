@@ -2,11 +2,11 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Profile } from './profile.entity';
 
-enum Contacts {
-  telegram = 'telegram',
-  instagram = 'instagram',
-  discord = 'discord',
-  vk = 'vk',
+export enum Contacts {
+  TELEGRAM = 'TELEGRAM',
+  INSTAGRAM = 'INSTAGRAM',
+  DISCORD = 'DISCORD',
+  VK = 'VK',
 }
 
 @ObjectType()
@@ -21,9 +21,10 @@ export class Contact {
   url: string;
 
   @Column({ type: 'enum', enum: Contacts })
-  @Field(() => [Contacts])
+  @Field()
   type: Contacts;
 
   @ManyToOne(() => Profile, (profile) => profile.contacts)
+  @Field(() => Profile, { nullable: true })
   profile: Profile;
 }
