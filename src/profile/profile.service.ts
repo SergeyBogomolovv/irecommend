@@ -12,6 +12,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AddContactDto } from './dto/add-contact.dto';
 import { Contact, Contacts } from '@app/shared/entities/contact.entity';
+import { MessageResponse } from '@app/shared/dto/message.response';
 
 @Injectable()
 export class ProfileService {
@@ -19,11 +20,17 @@ export class ProfileService {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
     @InjectRepository(Contact)
     private readonly contactsRepository: Repository<Contact>,
-
     private readonly cloud: S3Service,
     private readonly config: ConfigService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
+
+  async getProfileInfo(id: string, relations: string[]) {
+    return this.usersRepository.findOne({
+      where: { id },
+      relations,
+    });
+  }
 
   async updateProfile(
     id: string,
@@ -32,16 +39,16 @@ export class ProfileService {
   ) {
     const user = await this.usersRepository.findOne({
       where: { id },
-      relations,
+      relations: [...relations, 'profile'],
     });
     if (!user) throw new NotFoundException('Пользователь не найден');
-    let newLogo = user.profile?.logo;
+    let newLogo = user.profile.logo;
     if (payload.file) {
       newLogo = await this.cloud.upload({
         file: payload.file.createReadStream(),
         path: 'logos',
       });
-      if (user.profile?.logo?.includes(this.config.get('YANDEX_BUCKET'))) {
+      if (user.profile.logo?.includes(this.config.get('YANDEX_BUCKET'))) {
         this.eventEmitter.emit(
           'delete_image',
           user.profile.logo.split('.net/')[1],
@@ -56,19 +63,20 @@ export class ProfileService {
     const user = await this.usersRepository.findOne({
       where: { id },
     });
+    const type = Contacts[payload.type];
+    if (!type)
+      throw new BadRequestException('Вы указали неправильный тип контакта');
+
     const contact = new Contact();
     contact.profile = user.profile;
-    try {
-      contact.type = Contacts[payload.type];
-    } catch (error) {
-      throw new BadRequestException('Вы указали неправильный тип контакта');
-    }
+    contact.type = type;
     contact.url = payload.url;
-    return await this.contactsRepository.save(contact);
+    await this.contactsRepository.save(contact);
+    return new MessageResponse('Контакт добавлен в ваш профиль');
   }
 
   async removeContact(id: string) {
     await this.contactsRepository.delete(id);
-    return 'Контакт успешно удален';
+    return new MessageResponse('Контакт удален из вашего профиля');
   }
 }

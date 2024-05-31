@@ -46,6 +46,8 @@ import { ProfileModule } from './profile/profile.module';
         YANDEX_ACCESS: Joi.string().required(),
         YANDEX_SECRET: Joi.string().required(),
         YANDEX_BUCKET: Joi.string().required(),
+
+        CLIENT_URL: Joi.string().required(),
       }),
     }),
     EventEmitterModule.forRoot({ global: true }),
@@ -86,12 +88,12 @@ import { ProfileModule } from './profile/profile.module';
         synchronize: true,
       }),
     }),
-    MailModule,
-    AuthModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/schema.gql',
     }),
+    MailModule,
+    AuthModule,
     UsersModule,
     S3Module,
     ProfileModule,

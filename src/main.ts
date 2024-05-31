@@ -18,32 +18,28 @@ async function bootstrap() {
       contentSecurityPolicy: false,
     }),
   );
-
   app.use(
     '/graphql',
     graphqlUploadExpress({ maxFileSize: 50000000, maxFiles: 10 }),
   );
-
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors) => {
-        return new BadRequestException({
+        throw new BadRequestException({
           message: errors[0].constraints[Object.keys(errors[0].constraints)[0]],
         });
       },
       stopAtFirstError: true,
     }),
   );
-
   app.useGlobalFilters(new ApiExceptionFilter());
 
-  const corsOptions = {
-    origin: 'http://localhost:3000',
-    credentials: true,
-  };
-
-  app.use(cors(corsOptions));
-
+  app.use(
+    cors({
+      origin: config.get('CLIENT_URL'),
+      credentials: true,
+    }),
+  );
   app.use(cookieParser());
 
   const swaggerConfig = new DocumentBuilder()

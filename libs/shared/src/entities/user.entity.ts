@@ -27,7 +27,7 @@ export class User {
   readonly created_at: Date;
 
   @Column({ unique: true })
-  @Field()
+  @Field({ nullable: true })
   email: string;
 
   @Exclude({ toPlainOnly: true })
