@@ -17,10 +17,10 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { HashingService } from './services/hashing.service';
 import { OtpMailDto } from 'src/mail/dto/otp-mail.dto';
 import { OtpService } from './services/otp.service';
-import { MessageResponse } from './response/message.response';
 import { TokenService } from './services/token.service';
-import { AccessTokenResponse } from './response/access.response';
+import { AccessTokenResponse } from '../../libs/shared/src/dto/access.response';
 import { PasswordResetDto } from './dto/password-reset.dto';
+import { MessageResponse } from '@app/shared/dto/message.response';
 
 @Injectable()
 export class AuthService {
@@ -54,7 +54,7 @@ export class AuthService {
     });
     return response
       .status(HttpStatus.CREATED)
-      .json(new AccessTokenResponse({ access_token }));
+      .json(new AccessTokenResponse(access_token));
   }
 
   async register(dto: RegisterDto) {
@@ -76,9 +76,9 @@ export class AuthService {
       new OtpMailDto({ code, to: newUser.email }),
     );
     await this.userRepository.save(newUser);
-    return new MessageResponse({
-      message: `Сообщение с кодом подтверждения было отправлено на ${newUser.email}`,
-    });
+    return new MessageResponse(
+      `Сообщение с кодом подтверждения было отправлено на ${newUser.email}`,
+    );
   }
 
   async verifyAccount(dto: VerifyAccountDto, response: Response) {
@@ -107,7 +107,7 @@ export class AuthService {
     });
     return response
       .status(HttpStatus.CREATED)
-      .json(new AccessTokenResponse({ access_token }));
+      .json(new AccessTokenResponse(access_token));
   }
 
   async passwordResetRequest(dto: PasswordResetRequestDto) {
@@ -122,9 +122,9 @@ export class AuthService {
       'send_password_reset_email',
       new OtpMailDto({ to: dto.email, code }),
     );
-    return new MessageResponse({
-      message: 'Письмо с кодом потдверждения было отправлено вам на почту',
-    });
+    return new MessageResponse(
+      'Письмо с кодом потдверждения было отправлено вам на почту',
+    );
   }
 
   async passwordReset(dto: PasswordResetDto) {
@@ -137,7 +137,7 @@ export class AuthService {
     const hashedPassword = await this.hashingService.hash(dto.newPassword);
     user.password = hashedPassword;
     await this.userRepository.save(user);
-    return new MessageResponse({ message: 'Пароль успешно изменен' });
+    return new MessageResponse('Пароль успешно изменен');
   }
 
   async refresh(refreshToken: string) {
@@ -145,13 +145,13 @@ export class AuthService {
     if (!token) throw new UnauthorizedException('Token expired');
     const user = await this.userRepository.findOneBy({ id: token.userId });
     const access_token = this.tokenService.generateAccessToken(user);
-    return new AccessTokenResponse({ access_token });
+    return new AccessTokenResponse(access_token);
   }
 
   async logout(response: Response, refreshToken: string) {
     await this.tokenService.deleteRefreshToken(refreshToken);
     return response
       .clearCookie('refresh_token')
-      .json(new MessageResponse({ message: 'Вы успешно вышли из аккаунта' }));
+      .json(new MessageResponse('Вы успешно вышли из аккаунта'));
   }
 }
