@@ -64,7 +64,8 @@ type Recommendation {
 type User {
   id: ID!
   created_at: DateTime!
-  email: String
+  email: String!
+  password: String!
   verified: Boolean!
   profile: Profile
   friends: [User!]
@@ -78,22 +79,9 @@ type MessageResponse {
   message: String!
 }
 
-type PublicUserResponse {
-  id: ID!
-  created_at: DateTime!
-  email: String
-  verified: Boolean!
-  profile: Profile
-  friends: [User!]
-  sendedFriendRequests: [FriendRequest!]
-  receivedFriendRequests: [FriendRequest!]
-  recommendations: [Recommendation!]
-  favorites: [Recommendation!]
-}
-
 type Query {
-  one_user(id: String!): PublicUserResponse!
-  search_users(name: String!): [PublicUserResponse!]!
+  one_user(id: String!): User!
+  search_users(name: String!): [User!]!
   profile: User!
 }
 

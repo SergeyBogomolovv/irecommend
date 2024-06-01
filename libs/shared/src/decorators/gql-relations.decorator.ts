@@ -16,39 +16,24 @@ export const GqlRelations = (parent: string | string[] = []) => {
     string[]
   >(({ parent }, context) => {
     const ctx = GqlExecutionContext.create(context);
-    const info = ctx.getInfo();
-    return getRelations(resolveFields(info, true, parent));
+    return Array.from(
+      new Set(
+        fieldMapToDot(resolveFieldMap(ctx.getInfo(), parent))
+          .map((field) => {
+            const words = field.split('.');
+            if (words.length >= 2) {
+              words.pop();
+              return words.join('.');
+            }
+          })
+          .filter((field) => field !== undefined),
+      ),
+    );
   })({ parent });
 };
 
-const getRelations = (fields: string[]) => {
-  return Array.from(
-    new Set(
-      fields
-        .map((field) => {
-          const words = field.split('.');
-          if (words.length >= 2) {
-            words.pop();
-            return words.join('.');
-          }
-        })
-        .filter((field) => field !== undefined),
-    ),
-  );
-};
-
-const resolveFields = (
-  info: Pick<GraphQLResolveInfo, 'fieldNodes' | 'fragments'>,
-  deep: boolean = true,
-  parent: string | string[] = [],
-) => {
-  const fieldMap = resolveFieldMap(info, deep, parent);
-  return fieldMapToDot(fieldMap);
-};
-
 const resolveFieldMap = (
-  info: Pick<GraphQLResolveInfo, 'fieldNodes' | 'fragments'>,
-  deep: boolean = true,
+  info: GraphQLResolveInfo,
   parent: string | string[] = [],
 ) => {
   const { fieldNodes, fragments } = info;
@@ -58,12 +43,12 @@ const resolveFieldMap = (
     const fieldNode = getFieldNode(info, parents);
     return resolveFieldMapRecursively(
       fieldNode?.selectionSet ? [...fieldNode.selectionSet.selections] : [],
-      deep,
+      true,
       fragments,
     );
   }
 
-  return resolveFieldMapRecursively([...fieldNodes], deep, fragments);
+  return resolveFieldMapRecursively([...fieldNodes], true, fragments);
 };
 
 const resolveFieldMapRecursively = (
