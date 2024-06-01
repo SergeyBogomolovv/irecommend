@@ -6,20 +6,24 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { User } from './user.entity';
 import { Image } from './image.entity';
 import { Comment } from './comments.entity';
 
 export enum RecommendationType {
-  movie = 'movie',
-  music = 'music',
-  anime = 'anime',
-  book = 'book',
-  hobby = 'hobby',
-  todo = 'todo',
-  series = 'series',
+  MOVIE = 'MOVIE',
+  MUSIC = 'MUSIC',
+  ANIME = 'ANIME',
+  BOOK = 'BOOK',
+  HOBBY = 'HOBBY',
+  TODO = 'TODO',
+  SERIES = 'SERIES',
 }
+
+registerEnumType(RecommendationType, {
+  name: 'RecommendationType',
+});
 
 @ObjectType()
 @Entity()
@@ -33,7 +37,7 @@ export class Recommendation {
   description: string;
 
   @Column({ type: 'enum', enum: RecommendationType })
-  @Field()
+  @Field(() => RecommendationType)
   type: RecommendationType;
 
   @Column({ nullable: true })

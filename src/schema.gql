@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type MessageResponse {
+  message: String!
+}
+
 type Contact {
   id: ID!
   url: String!
@@ -50,12 +54,22 @@ type Comment {
 type Recommendation {
   id: ID!
   description: String!
-  type: String!
+  type: RecommendationType!
   link: String
   images: [Image!]
   comments: [Comment!]
   author: User
   created_at: DateTime!
+}
+
+enum RecommendationType {
+  MOVIE
+  MUSIC
+  ANIME
+  BOOK
+  HOBBY
+  TODO
+  SERIES
 }
 
 type User {
@@ -70,10 +84,6 @@ type User {
   receivedFriendRequests: [FriendRequest!]
   recommendations: [Recommendation!]
   favorites: [Recommendation!]
-}
-
-type MessageResponse {
-  message: String!
 }
 
 type Query {

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@app/shared/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -12,12 +12,48 @@ export class UsersService {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
 
-  async findOne(id: string, relations: string[]) {
+  async findOneByIdOrFail(id: string, relations?: string[]) {
     this.logger.verbose(`Founding for user by ${id}`);
-    return await this.usersRepository.findOneOrFail({
+    const user = await this.usersRepository.findOne({
       where: { id },
       relations,
     });
+    if (!user) throw new NotFoundException('Пользователь не найден');
+    return user;
+  }
+
+  async findOneByEmailOrFail(email: string, relations?: string[]) {
+    this.logger.verbose(`Founding for user by ${email}`);
+    const user = await this.usersRepository.findOne({
+      where: { email },
+      relations,
+    });
+    if (!user) throw new NotFoundException('Пользователь не найден');
+    return user;
+  }
+
+  async findOneById(id: string, relations?: string[]) {
+    this.logger.verbose(`Founding for user by ${id}`);
+    return await this.usersRepository.findOne({
+      where: { id },
+      relations,
+    });
+  }
+
+  async findOneByEmail(email: string, relations?: string[]) {
+    this.logger.verbose(`Founding for user by ${email}`);
+    return await this.usersRepository.findOne({
+      where: { email },
+      relations,
+    });
+  }
+
+  async create(user: Partial<User>) {
+    return await this.usersRepository.save(this.usersRepository.create(user));
+  }
+
+  async update(user: Partial<User>) {
+    return await this.usersRepository.save(user);
   }
 
   async searchUsers(name: string, relations: string[]) {

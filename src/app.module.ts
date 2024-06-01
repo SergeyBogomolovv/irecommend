@@ -20,6 +20,7 @@ import { UsersModule } from './users/users.module';
 import { S3Module } from './s3/s3.module';
 import { ProfileModule } from './profile/profile.module';
 import { FriendsModule } from './friends/friends.module';
+import { RecommendationsModule } from './recommendations/recommendations.module';
 
 @Module({
   imports: [
@@ -99,6 +100,7 @@ import { FriendsModule } from './friends/friends.module';
     S3Module,
     ProfileModule,
     FriendsModule,
+    RecommendationsModule,
   ],
 })
 export class AppModule {}
