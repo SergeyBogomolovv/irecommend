@@ -9,11 +9,13 @@ import { graphqlUploadExpress } from 'graphql-upload-ts';
 import {
   BadRequestException,
   ClassSerializerInterceptor,
+  Logger,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiExceptionFilter } from '@app/shared/filters/api.filter';
 
 async function bootstrap() {
+  const logger = new Logger('bootstrap');
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
 
@@ -57,6 +59,8 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document);
-  await app.listen(config.get('APP_PORT'));
+  await app.listen(config.get('APP_PORT'), () => {
+    logger.log(`App started on ${config.get('APP_PORT')}`);
+  });
 }
 bootstrap();

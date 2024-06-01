@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import { OtpMailDto } from './dto/otp-mail.dto';
@@ -6,6 +6,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class MailService {
+  private readonly logger = new Logger(MailService.name);
   constructor(private readonly config: ConfigService) {}
   private readonly transporter = nodemailer.createTransport({
     host: this.config.get('MAIL_HOST'),
@@ -20,6 +21,7 @@ export class MailService {
 
   @OnEvent('send_activation_email')
   sendActivationMail(dto: OtpMailDto) {
+    this.logger.verbose(`Sending verification email to ${dto.to}`);
     this.transporter.sendMail({
       to: dto.to,
       html: `
@@ -104,6 +106,7 @@ export class MailService {
   }
   @OnEvent('send_password_reset_email')
   sendPasswordResetMail(dto: OtpMailDto) {
+    this.logger.verbose(`Sending reset password email to ${dto.to}`);
     this.transporter.sendMail({
       to: dto.to,
       html: `
@@ -182,7 +185,6 @@ export class MailService {
           </div>
         </body>
       </html>
-      
     `,
     });
   }
