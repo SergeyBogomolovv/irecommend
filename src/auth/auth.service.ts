@@ -47,9 +47,7 @@ export class AuthService {
     }
     const access_token = this.tokenService.generateAccessToken(user);
     const refresh_token = await this.tokenService.generateRefreshToken(user.id);
-    this.logger.verbose(
-      `User ${user.email} logined ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
-    );
+    this.logger.verbose(`${user.email} logined at ${this.date()}`);
     response.cookie('refresh_token', refresh_token.token, {
       httpOnly: true,
       sameSite: 'lax',
@@ -78,9 +76,7 @@ export class AuthService {
       'send_activation_email',
       new OtpMailDto({ code, to: newUser.email }),
     );
-    this.logger.verbose(
-      `User ${newUser.email} registered ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
-    );
+    this.logger.verbose(`${newUser.email} registered at ${this.date()}`);
     return new MessageResponse(
       `Сообщение с кодом подтверждения было отправлено на ${newUser.email}`,
     );
@@ -104,7 +100,7 @@ export class AuthService {
       existingUser.id,
     );
     this.logger.verbose(
-      `User ${existingUser.email} verified account ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
+      `${existingUser.email} verified account at ${this.date()})}`,
     );
     response.cookie('refresh_token', refresh_token.token, {
       httpOnly: true,
@@ -130,7 +126,7 @@ export class AuthService {
       new OtpMailDto({ to: dto.email, code }),
     );
     this.logger.verbose(
-      `User ${dto.email} requested to change password ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
+      `${dto.email} requested to change password at ${this.date()}`,
     );
     return new MessageResponse(
       'Письмо с кодом потдверждения было отправлено вам на почту',
@@ -146,9 +142,7 @@ export class AuthService {
     const user = await this.usersService.findOneByEmailOrFail(dto.email);
     const hashedPassword = await this.hashingService.hash(dto.newPassword);
     user.password = hashedPassword;
-    this.logger.verbose(
-      `User ${user.email} changed password ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
-    );
+    this.logger.verbose(`${user.email} changed password at ${this.date()}`);
     await this.usersService.update(user);
     return new MessageResponse('Пароль успешно изменен');
   }
@@ -158,7 +152,7 @@ export class AuthService {
     if (!token) throw new UnauthorizedException('Token expired');
     const user = await this.usersService.findOneByIdOrFail(token.userId);
     this.logger.verbose(
-      `User ${user.email} refreshed access token ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
+      `${user.email} refreshed access token at ${this.date()}`,
     );
     const access_token = this.tokenService.generateAccessToken(user);
     return new AccessTokenResponse(access_token);
@@ -166,8 +160,13 @@ export class AuthService {
 
   async logout(response: Response, refreshToken: string) {
     await this.tokenService.deleteRefreshToken(refreshToken);
+    this.logger.verbose(`User logout at ${this.date()}`);
     return response
       .clearCookie('refresh_token')
       .json(new MessageResponse('Вы успешно вышли из аккаунта'));
+  }
+
+  private date() {
+    return format(new Date(), 'dd.MM.yy HH:mm:ss');
   }
 }

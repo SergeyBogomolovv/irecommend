@@ -50,7 +50,7 @@ export class ProfileService {
       }
     }
     user.profile = { ...user.profile, ...payload, logo: newLogo };
-    this.logger.verbose(`Updating profile for user ${id}`);
+    this.logger.verbose(`Updating profile for user ${user.email}`);
     return await this.usersService.update(user);
   }
 
@@ -60,12 +60,15 @@ export class ProfileService {
     ]);
     user.profile.contacts.push(this.contactsRepository.create({ ...payload }));
     await this.usersService.update(user);
+    this.logger.verbose(
+      `contact ${payload.type} added to ${user.email} profile`,
+    );
     return new MessageResponse('Контакт добавлен в ваш профиль');
   }
 
   async removeContact(id: string) {
     await this.contactsRepository.delete(id);
-    this.logger.verbose(`Removing contact with ${id}`);
+    this.logger.verbose(`Removing contact ${id}`);
     return new MessageResponse('Контакт удален из вашего профиля');
   }
 }
