@@ -10,12 +10,14 @@ import { Response } from 'express';
 import { Cookie } from '@app/shared/decorators/cookies.decorator';
 import { AccessTokenResponse } from '@app/shared/dto/access.response';
 import { MessageResponse } from '@app/shared/dto/message.response';
+import { Serialize } from '@app/shared/interceptors/serialize.interceptor';
 
 @ApiTags('Авторизация')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Serialize(AccessTokenResponse)
   @ApiOperation({
     summary: 'Вход через почту и пароль',
     description: 'Ставит http only куку и возвращает access token',
@@ -36,6 +38,7 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
+  @Serialize(AccessTokenResponse)
   @ApiOperation({
     summary: 'Подтверждение регистрации',
     description: 'Ставит http only куку и возвращает access token',
@@ -74,6 +77,7 @@ export class AuthController {
     return this.authService.refresh(refreshToken);
   }
 
+  @Serialize(MessageResponse)
   @ApiOperation({
     summary: 'Выход из аккаунта',
   })
