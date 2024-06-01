@@ -5,8 +5,14 @@
 type Contact {
   id: ID!
   url: String!
-  type: String!
-  profile: Profile
+  type: Contacts!
+}
+
+enum Contacts {
+  TELEGRAM
+  INSTAGRAM
+  DISCORD
+  VK
 }
 
 type Profile {
@@ -32,13 +38,11 @@ scalar DateTime
 type Image {
   id: ID!
   url: String!
-  recommendation: Recommendation
 }
 
 type Comment {
   id: ID!
   content: String!
-  recommendation: Recommendation
   author: User
   created_at: DateTime!
 }
@@ -58,6 +62,7 @@ type User {
   id: ID!
   created_at: DateTime!
   email: String
+  password: String
   verified: Boolean!
   profile: Profile
   friends: [User!]
@@ -71,22 +76,9 @@ type MessageResponse {
   message: String!
 }
 
-type PublicUserResponse {
-  id: ID!
-  created_at: DateTime!
-  email: String
-  verified: Boolean!
-  profile: Profile
-  friends: [User!]
-  sendedFriendRequests: [FriendRequest!]
-  receivedFriendRequests: [FriendRequest!]
-  recommendations: [Recommendation!]
-  favorites: [Recommendation!]
-}
-
 type Query {
-  one_user(id: String!): PublicUserResponse!
-  search_users(name: String!): [PublicUserResponse!]!
+  one_user(id: String!): User!
+  search_users(name: String!): [User!]!
   profile: User!
 }
 
@@ -111,5 +103,5 @@ scalar Upload
 
 input AddContactDto {
   url: String!
-  type: String!
+  type: Contacts!
 }

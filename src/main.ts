@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
@@ -6,7 +6,11 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import { graphqlUploadExpress } from 'graphql-upload-ts';
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  ClassSerializerInterceptor,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiExceptionFilter } from '@app/shared/filters/api.filter';
 
 async function bootstrap() {
@@ -33,6 +37,8 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new ApiExceptionFilter());
+
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   app.use(
     cors({

@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, HideField, ID, ObjectType } from '@nestjs/graphql';
 import { Recommendation } from './recommendation.entity';
 
 @ObjectType()
@@ -14,6 +14,6 @@ export class Image {
   url: string;
 
   @ManyToOne(() => Recommendation, (recommendation) => recommendation.images)
-  @Field(() => Recommendation, { nullable: true })
+  @HideField()
   recommendation: Recommendation;
 }

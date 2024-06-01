@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, HideField, ID, ObjectType } from '@nestjs/graphql';
 import { Recommendation } from './recommendation.entity';
 import { User } from './user.entity';
 
@@ -22,7 +22,7 @@ export class Comment {
   content: string;
 
   @ManyToOne(() => Recommendation, (recommendation) => recommendation.comments)
-  @Field(() => Recommendation, { nullable: true })
+  @HideField()
   recommendation: Recommendation;
 
   @ManyToOne(() => User)

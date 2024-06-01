@@ -1,17 +1,13 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { UpdateProfileDto } from './dto/update-profile.input';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ConfigService } from '@nestjs/config';
 import { S3Service } from 'src/s3/s3.service';
 import { User } from '@app/shared/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AddContactDto } from './dto/add-contact.dto';
-import { Contact, Contacts } from '@app/shared/entities/contact.entity';
+import { AddContactDto } from './dto/add-contact.input';
+import { Contact } from '@app/shared/entities/contact.entity';
 import { MessageResponse } from '@app/shared/dto/message.response';
 
 @Injectable()
@@ -64,12 +60,7 @@ export class ProfileService {
       where: { id },
       relations: ['profile.contacts'],
     });
-    const type = Contacts[payload.type];
-    if (!type)
-      throw new BadRequestException('Вы указали неправильный тип контакта');
-    user.profile.contacts.push(
-      this.contactsRepository.create({ ...payload, type }),
-    );
+    user.profile.contacts.push(this.contactsRepository.create({ ...payload }));
     await this.usersRepository.save(user);
     return new MessageResponse('Контакт добавлен в ваш профиль');
   }

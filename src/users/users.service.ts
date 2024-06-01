@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@app/shared/entities/user.entity';
 import { Repository } from 'typeorm';
-import { PublicUserResponse } from '@app/shared/dto/public-user.response';
 import { FuseResult } from 'fuse.js';
 const Fuse = require('fuse.js');
 
@@ -13,11 +12,10 @@ export class UsersService {
   ) {}
 
   async findOne(id: string, relations: string[]) {
-    const user = await this.usersRepository.findOneOrFail({
+    return await this.usersRepository.findOneOrFail({
       where: { id },
       relations,
     });
-    return new PublicUserResponse(user);
   }
 
   async searchUsers(name: string, relations: string[]) {
@@ -35,8 +33,6 @@ export class UsersService {
     };
 
     const fuse = new Fuse(list, fuseOptions);
-    return fuse
-      .search(name)
-      .map((result: FuseResult<User>) => new PublicUserResponse(result.item));
+    return fuse.search(name).map((result: FuseResult<User>) => result.item);
   }
 }

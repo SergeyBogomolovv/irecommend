@@ -13,7 +13,7 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Profile } from './profile.entity';
 import { FriendRequest } from './friend-request.entity';
 import { Recommendation } from './recommendation.entity';
-import { Exclude } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 
 @Entity()
 @ObjectType()
@@ -26,12 +26,14 @@ export class User {
   @Field(() => Date)
   readonly created_at: Date;
 
+  @Expose({ groups: ['private'] })
   @Column({ unique: true })
   @Field({ nullable: true })
   email: string;
 
-  @Exclude({ toPlainOnly: true })
   @Column()
+  @Exclude({ toPlainOnly: true })
+  @Field({ nullable: true })
   password: string;
 
   @Column({ type: 'boolean', default: false })
