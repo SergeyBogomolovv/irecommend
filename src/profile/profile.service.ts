@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { UpdateProfileDto } from './dto/update-profile.input';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ConfigService } from '@nestjs/config';
@@ -12,6 +12,7 @@ import { MessageResponse } from '@app/shared/dto/message.response';
 
 @Injectable()
 export class ProfileService {
+  private readonly logger = new Logger(ProfileService.name);
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
     @InjectRepository(Contact)
@@ -22,7 +23,8 @@ export class ProfileService {
   ) {}
 
   async getProfileInfo(id: string, relations: string[]) {
-    return this.usersRepository.findOne({
+    this.logger.verbose(`Searching for profile info to ${id}`);
+    return this.usersRepository.findOneOrFail({
       where: { id },
       relations,
     });
@@ -33,13 +35,13 @@ export class ProfileService {
     payload: UpdateProfileDto,
     relations: string[],
   ) {
-    const user = await this.usersRepository.findOne({
+    const user = await this.usersRepository.findOneOrFail({
       where: { id },
       relations: [...relations, 'profile'],
     });
-    if (!user) throw new NotFoundException('Пользователь не найден');
     let newLogo = user.profile.logo;
     if (payload.file) {
+      this.logger.verbose(`Updating profile logo for user ${id}`);
       newLogo = await this.cloud.upload({
         file: payload.file.createReadStream(),
         path: 'logos',
@@ -52,11 +54,12 @@ export class ProfileService {
       }
     }
     user.profile = { ...user.profile, ...payload, logo: newLogo };
+    this.logger.verbose(`Updating profile for user ${id}`);
     return await this.usersRepository.save(user);
   }
 
   async addContact(id: string, payload: AddContactDto) {
-    const user = await this.usersRepository.findOne({
+    const user = await this.usersRepository.findOneOrFail({
       where: { id },
       relations: ['profile.contacts'],
     });
@@ -67,6 +70,7 @@ export class ProfileService {
 
   async removeContact(id: string) {
     await this.contactsRepository.delete(id);
+    this.logger.verbose(`Removing contact with ${id}`);
     return new MessageResponse('Контакт удален из вашего профиля');
   }
 }

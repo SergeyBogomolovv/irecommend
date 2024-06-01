@@ -3,6 +3,7 @@ import {
   ConflictException,
   HttpStatus,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
@@ -21,9 +22,11 @@ import { TokenService } from './services/token.service';
 import { AccessTokenResponse } from '../../libs/shared/src/dto/access.response';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import { MessageResponse } from '@app/shared/dto/message.response';
+import { format } from 'date-fns';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly eventEmitter: EventEmitter2,
@@ -33,18 +36,23 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginDto, response: Response) {
-    const user = await this.userRepository.findOneBy({ email: dto.email });
+    const user = await this.userRepository.findOneByOrFail({
+      email: dto.email,
+    });
 
     const isPasswordValid = await this.hashingService.compare(
       dto.password,
       user.password,
     );
 
-    if (!user || !user.verified || !isPasswordValid) {
+    if (!user.verified || !isPasswordValid) {
       throw new BadRequestException('Данные невереные');
     }
     const access_token = this.tokenService.generateAccessToken(user);
     const refresh_token = await this.tokenService.generateRefreshToken(user.id);
+    this.logger.verbose(
+      `User ${user.email} logined ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
+    );
     response.cookie('refresh_token', refresh_token.token, {
       httpOnly: true,
       sameSite: 'lax',
@@ -75,6 +83,9 @@ export class AuthService {
       'send_activation_email',
       new OtpMailDto({ code, to: newUser.email }),
     );
+    this.logger.verbose(
+      `User ${newUser.email} registered ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
+    );
     await this.userRepository.save(newUser);
     return new MessageResponse(
       `Сообщение с кодом подтверждения было отправлено на ${newUser.email}`,
@@ -97,6 +108,9 @@ export class AuthService {
     const access_token = this.tokenService.generateAccessToken(existingUser);
     const refresh_token = await this.tokenService.generateRefreshToken(
       existingUser.id,
+    );
+    this.logger.verbose(
+      `User ${existingUser.email} verified account ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
     );
     response.cookie('refresh_token', refresh_token.token, {
       httpOnly: true,
@@ -122,6 +136,9 @@ export class AuthService {
       'send_password_reset_email',
       new OtpMailDto({ to: dto.email, code }),
     );
+    this.logger.verbose(
+      `User ${dto.email} requested to change password ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
+    );
     return new MessageResponse(
       'Письмо с кодом потдверждения было отправлено вам на почту',
     );
@@ -133,9 +150,14 @@ export class AuthService {
       dto.code,
     );
     if (!isCodeValid) throw new BadRequestException('Код неверный');
-    const user = await this.userRepository.findOneBy({ email: dto.email });
+    const user = await this.userRepository.findOneByOrFail({
+      email: dto.email,
+    });
     const hashedPassword = await this.hashingService.hash(dto.newPassword);
     user.password = hashedPassword;
+    this.logger.verbose(
+      `User ${user.email} changed password ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
+    );
     await this.userRepository.save(user);
     return new MessageResponse('Пароль успешно изменен');
   }
@@ -143,7 +165,12 @@ export class AuthService {
   async refresh(refreshToken: string) {
     const token = await this.tokenService.getRefreshToken(refreshToken);
     if (!token) throw new UnauthorizedException('Token expired');
-    const user = await this.userRepository.findOneBy({ id: token.userId });
+    const user = await this.userRepository.findOneByOrFail({
+      id: token.userId,
+    });
+    this.logger.verbose(
+      `User ${user.email} refreshed access token ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
+    );
     const access_token = this.tokenService.generateAccessToken(user);
     return new AccessTokenResponse(access_token);
   }
