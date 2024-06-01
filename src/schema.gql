@@ -6,7 +6,6 @@ type Contact {
   id: ID!
   url: String!
   type: Contacts!
-  profile: Profile
 }
 
 enum Contacts {
@@ -39,13 +38,11 @@ scalar DateTime
 type Image {
   id: ID!
   url: String!
-  recommendation: Recommendation
 }
 
 type Comment {
   id: ID!
   content: String!
-  recommendation: Recommendation
   author: User
   created_at: DateTime!
 }
@@ -64,8 +61,8 @@ type Recommendation {
 type User {
   id: ID!
   created_at: DateTime!
-  email: String!
-  password: String!
+  email: String
+  password: String
   verified: Boolean!
   profile: Profile
   friends: [User!]

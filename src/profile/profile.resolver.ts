@@ -1,7 +1,7 @@
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { ProfileService } from './profile.service';
 import { GqlAuthGuard } from '@app/shared/guards/gql-auth.guard';
-import { UseGuards } from '@nestjs/common';
+import { SerializeOptions, UseGuards } from '@nestjs/common';
 import { User } from '@app/shared/entities/user.entity';
 import { UserFromGql } from '@app/shared/decorators/user-gql.decorator';
 import { GqlRelations } from '@app/shared/decorators/gql-relations.decorator';
@@ -13,6 +13,9 @@ import { MessageResponse } from '@app/shared/dto/message.response';
 export class ProfileResolver {
   constructor(private readonly profileService: ProfileService) {}
 
+  @SerializeOptions({
+    groups: ['private'],
+  })
   @UseGuards(GqlAuthGuard)
   @Query(() => User, { name: 'profile' })
   getSelf(

@@ -1,5 +1,11 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
+import {
+  Field,
+  HideField,
+  ID,
+  ObjectType,
+  registerEnumType,
+} from '@nestjs/graphql';
 import { Profile } from './profile.entity';
 
 export enum Contacts {
@@ -29,6 +35,6 @@ export class Contact {
   type: Contacts;
 
   @ManyToOne(() => Profile, (profile) => profile.contacts)
-  @Field(() => Profile, { nullable: true })
+  @HideField()
   profile: Profile;
 }
