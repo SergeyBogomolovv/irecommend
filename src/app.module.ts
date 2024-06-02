@@ -21,6 +21,7 @@ import { S3Module } from './s3/s3.module';
 import { ProfileModule } from './profile/profile.module';
 import { FriendsModule } from './friends/friends.module';
 import { RecommendationsModule } from './recommendations/recommendations.module';
+import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
   imports: [
@@ -101,6 +102,7 @@ import { RecommendationsModule } from './recommendations/recommendations.module'
     ProfileModule,
     FriendsModule,
     RecommendationsModule,
+    FavoritesModule,
   ],
 })
 export class AppModule {}
