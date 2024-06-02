@@ -1,12 +1,14 @@
-import {
-  Recommendation,
-  RecommendationType,
-} from '@app/shared/entities/recommendation.entity';
+import { RecommendationType } from '@app/shared/entities/recommendation.entity';
 import { Field, InputType } from '@nestjs/graphql';
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 @InputType()
-export class CreateRecommendationInput implements Partial<Recommendation> {
+export class CreateRecommendationInput {
+  @IsNotEmpty()
+  @IsString()
+  @Field()
+  title: string;
+
   @IsNotEmpty()
   @IsString()
   @Field()
@@ -17,8 +19,6 @@ export class CreateRecommendationInput implements Partial<Recommendation> {
   @Field(() => RecommendationType)
   type: RecommendationType;
 
-  @IsString()
-  @IsOptional()
   @Field({ nullable: true })
   link?: string;
 }

@@ -8,6 +8,7 @@ import { GqlRelations } from '@app/shared/decorators/gql-relations.decorator';
 import { UpdateProfileDto } from './dto/update-profile.input';
 import { AddContactDto } from './dto/add-contact.input';
 import { MessageResponse } from '@app/shared/dto/message.response';
+import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
 
 @Resolver()
 export class ProfileResolver {
@@ -29,17 +30,20 @@ export class ProfileResolver {
   @Mutation(() => User, { name: 'update_profile' })
   updateProfile(
     @UserFromGql('id') id: string,
-    @Args('payload') payload: UpdateProfileDto,
+    @Args('payload', { type: () => UpdateProfileDto })
+    payload: UpdateProfileDto,
+    @Args('image', { type: () => GraphQLUpload, nullable: true })
+    image: FileUpload,
     @GqlRelations('update_profile') relations: string[],
   ) {
-    return this.profileService.updateProfile(id, payload, relations);
+    return this.profileService.updateProfile(id, payload, image, relations);
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => MessageResponse, { name: 'add_contact' })
   addContatToProfile(
     @UserFromGql('id') id: string,
-    @Args('payload') payload: AddContactDto,
+    @Args('payload', { type: () => AddContactDto }) payload: AddContactDto,
   ) {
     return this.profileService.addContact(id, payload);
   }

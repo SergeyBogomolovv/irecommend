@@ -13,7 +13,9 @@ export class Image {
   @Field()
   url: string;
 
-  @ManyToOne(() => Recommendation, (recommendation) => recommendation.images)
+  @ManyToOne(() => Recommendation, (recommendation) => recommendation.images, {
+    onDelete: 'CASCADE',
+  })
   @HideField()
   recommendation: Recommendation;
 }

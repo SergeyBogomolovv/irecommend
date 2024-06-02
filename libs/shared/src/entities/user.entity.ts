@@ -40,7 +40,7 @@ export class User {
   @Field(() => Boolean)
   verified: boolean;
 
-  @OneToOne(() => Profile, { cascade: true, onDelete: 'CASCADE' })
+  @OneToOne(() => Profile, { cascade: true })
   @JoinColumn()
   @Field(() => Profile, { nullable: true })
   profile: Profile;

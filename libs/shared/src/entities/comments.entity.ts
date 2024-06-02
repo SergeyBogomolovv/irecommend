@@ -21,7 +21,11 @@ export class Comment {
   @Field()
   content: string;
 
-  @ManyToOne(() => Recommendation, (recommendation) => recommendation.comments)
+  @ManyToOne(
+    () => Recommendation,
+    (recommendation) => recommendation.comments,
+    { onDelete: 'CASCADE' },
+  )
   @HideField()
   recommendation: Recommendation;
 

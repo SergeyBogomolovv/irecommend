@@ -22,12 +22,12 @@ async function bootstrap() {
   app.use(
     helmet({
       contentSecurityPolicy: false,
+      crossOriginOpenerPolicy: false,
+      crossOriginEmbedderPolicy: false,
+      crossOriginResourcePolicy: false,
     }),
   );
-  app.use(
-    '/graphql',
-    graphqlUploadExpress({ maxFileSize: 50000000, maxFiles: 10 }),
-  );
+  app.use('/graphql', graphqlUploadExpress());
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors) => {
