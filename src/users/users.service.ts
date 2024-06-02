@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@app/shared/entities/user.entity';
 import { Repository } from 'typeorm';
 import { FuseResult } from 'fuse.js';
+import { MessageResponse } from '@app/shared/dto/message.response';
 const Fuse = require('fuse.js');
 
 @Injectable()
@@ -77,5 +78,12 @@ export class UsersService {
     const fuse = new Fuse(list, fuseOptions);
     this.logger.verbose(`Searching for users by name:${name}`);
     return fuse.search(name).map((result: FuseResult<User>) => result.item);
+  }
+
+  async delete(id: string) {
+    const user = await this.findOneByIdOrFail(id);
+    await this.usersRepository.remove(user);
+    this.logger.verbose(`User ${user.email} deleted account`);
+    return new MessageResponse('Аккаунт удален');
   }
 }

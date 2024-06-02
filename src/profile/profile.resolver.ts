@@ -53,4 +53,10 @@ export class ProfileResolver {
   removeContatFromProfile(@Args('contactId') id: string) {
     return this.profileService.removeContact(id);
   }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => MessageResponse, { name: 'delete_profile' })
+  deleteUser(@UserFromGql('id') id: string) {
+    return this.profileService.delete(id);
+  }
 }
