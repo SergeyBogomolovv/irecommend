@@ -5,7 +5,6 @@ import {
   HttpException,
   Logger,
 } from '@nestjs/common';
-import { format } from 'date-fns';
 import { Request, Response } from 'express';
 import { GraphQLError } from 'graphql';
 
@@ -14,7 +13,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(ApiExceptionFilter.name);
   catch(exception: HttpException, host: ArgumentsHost) {
     this.logger.error(
-      `Error ${exception.message} with status ${exception.getStatus()} ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
+      `Error ${exception.message} with status ${exception.getStatus()}`,
     );
 
     if (host.getType<string>() === 'graphql') {
