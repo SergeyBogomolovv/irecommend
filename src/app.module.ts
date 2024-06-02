@@ -22,6 +22,7 @@ import { ProfileModule } from './profile/profile.module';
 import { FriendsModule } from './friends/friends.module';
 import { RecommendationsModule } from './recommendations/recommendations.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -103,6 +104,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     FriendsModule,
     RecommendationsModule,
     FavoritesModule,
+    CommentsModule,
   ],
 })
 export class AppModule {}

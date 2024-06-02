@@ -56,7 +56,9 @@ export class Recommendation {
   @Field(() => [Image], { nullable: true })
   images: Image[];
 
-  @OneToMany(() => Comment, (comment) => comment.recommendation)
+  @OneToMany(() => Comment, (comment) => comment.recommendation, {
+    cascade: true,
+  })
   @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 
