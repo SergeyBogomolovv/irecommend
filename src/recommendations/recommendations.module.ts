@@ -16,5 +16,6 @@ import { Image } from '@app/shared/entities/image.entity';
     SharedModule,
   ],
   providers: [RecommendationsResolver, RecommendationsService],
+  exports: [RecommendationsService, TypeOrmModule.forFeature([Recommendation])],
 })
 export class RecommendationsModule {}

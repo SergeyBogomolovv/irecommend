@@ -109,6 +109,8 @@ type Mutation {
   delete_image_from_recommendation(imageId: String!): MessageResponse!
   add_images_to_recommendation(id: String!, images: [Upload!]!): MessageResponse!
   delete_recommendation(id: String!): MessageResponse!
+  add_to_favorites(id: String!): MessageResponse!
+  remove_from_favorites(id: String!): MessageResponse!
 }
 
 input UpdateProfileDto {
