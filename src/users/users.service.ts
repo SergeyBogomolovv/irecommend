@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@app/shared/entities/user.entity';
 import { Repository } from 'typeorm';
 import { FuseResult } from 'fuse.js';
-import { format } from 'date-fns';
+import { MessageResponse } from '@app/shared/dto/message.response';
 const Fuse = require('fuse.js');
 
 @Injectable()
@@ -19,7 +19,7 @@ export class UsersService {
       relations,
     });
     if (!user) throw new NotFoundException('Пользователь не найден');
-    this.logger.verbose(`User ${user.email} found by id at ${this.date()}`);
+    this.logger.verbose(`User ${user.email} found by id`);
     return user;
   }
 
@@ -29,7 +29,7 @@ export class UsersService {
       relations,
     });
     if (!user) throw new NotFoundException('Пользователь не найден');
-    this.logger.verbose(`User ${user.email} found by email at ${this.date()}`);
+    this.logger.verbose(`User ${user.email} found by email`);
     return user;
   }
 
@@ -38,7 +38,7 @@ export class UsersService {
       where: { id },
       relations,
     });
-    this.logger.verbose(`User ${user.email} found by id at ${this.date()}`);
+    this.logger.verbose(`User ${user.email} found by id`);
     return user;
   }
 
@@ -47,17 +47,17 @@ export class UsersService {
       where: { email },
       relations,
     });
-    this.logger.verbose(`User ${user.email} found by email at ${this.date()}`);
+    this.logger.verbose(`User ${user.email} found by email`);
     return user;
   }
 
   async create(user: Partial<User>) {
-    this.logger.verbose(`Creating user with ${user} at ${this.date()}`);
+    this.logger.verbose(`Creating user with`, JSON.stringify(user));
     return await this.usersRepository.save(this.usersRepository.create(user));
   }
 
   async update(user: Partial<User>) {
-    this.logger.verbose(`Updating user with ${user} at ${this.date()}`);
+    this.logger.verbose(`Updating user with`, JSON.stringify(user));
     return await this.usersRepository.save(user);
   }
 
@@ -76,10 +76,14 @@ export class UsersService {
     };
 
     const fuse = new Fuse(list, fuseOptions);
-    this.logger.verbose(`Searching for users by ${name} at ${this.date()}`);
+    this.logger.verbose(`Searching for users by name:${name}`);
     return fuse.search(name).map((result: FuseResult<User>) => result.item);
   }
-  private date() {
-    return format(new Date(), 'dd.MM.yy HH:mm:ss');
+
+  async delete(id: string) {
+    const user = await this.findOneByIdOrFail(id);
+    await this.usersRepository.remove(user);
+    this.logger.verbose(`User ${user.email} deleted account`);
+    return new MessageResponse('Аккаунт удален');
   }
 }

@@ -12,7 +12,6 @@ import { Repository } from 'typeorm';
 import { AddFriendDto } from './dto/add-friend.dto';
 import { DeleteFriendDto } from './dto/delete-friend.dto';
 import { UsersService } from 'src/users/users.service';
-import { format } from 'date-fns';
 
 @Injectable()
 export class FriendsService {
@@ -35,17 +34,13 @@ export class FriendsService {
         recipient: friend,
       }),
     );
-    this.logger.verbose(
-      `${user.email} sent friend request to ${friend.email} at ${this.date()}`,
-    );
+    this.logger.verbose(`${user.email} sent friend request to ${friend.email}`);
     return new MessageResponse(`Заявка в друзья отправлена`);
   }
 
   async declineFriendRequest(id: string) {
     await this.friendRequestsRepository.delete(id);
-    this.logger.verbose(
-      `Friend request with id ${id} rejected at ${this.date()}`,
-    );
+    this.logger.verbose(`Friend request with id ${id} rejected`);
     return new MessageResponse('Заявка в друзья отклонена');
   }
 
@@ -64,9 +59,7 @@ export class FriendsService {
       'delete_friend',
       new DeleteFriendDto({ user: friend, friendId: user.id }),
     );
-    this.logger.verbose(
-      `${user.email} deleted ${friend.email} from friends at ${this.date()}`,
-    );
+    this.logger.verbose(`${user.email} deleted ${friend.email} from friends`);
     return new MessageResponse('Пользователь удален из друзей');
   }
 
@@ -88,7 +81,7 @@ export class FriendsService {
       new AddFriendDto({ user: request.sender, friend: request.recipient }),
     );
     this.logger.verbose(
-      `${request.recipient.email} accepted friend request from ${request.sender.email} at ${this.date()}`,
+      `${request.recipient.email} accepted friend request from ${request.sender.email}`,
     );
     await this.friendRequestsRepository.delete(request.id);
     return new MessageResponse('Заявка в друзья принята');
@@ -106,9 +99,5 @@ export class FriendsService {
       (friend) => friend.id !== payload.friendId,
     );
     await this.usersService.update(payload.user);
-  }
-
-  private date() {
-    return format(new Date(), 'dd.MM.yy HH:mm:ss');
   }
 }

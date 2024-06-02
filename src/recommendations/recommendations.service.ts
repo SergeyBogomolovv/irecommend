@@ -96,6 +96,9 @@ export class RecommendationsService {
       ...recommendation,
       ...dto,
     });
+    this.logger.verbose(
+      `Recommendation ${recommendation.title} updated by ${recommendation.author.email}`,
+    );
     return new MessageResponse('Рекомендация успешно обновлена');
   }
 
@@ -121,6 +124,9 @@ export class RecommendationsService {
       const image = this.imagesRepository.create({ url, recommendation });
       recommendation.images.push(await this.imagesRepository.save(image));
     });
+    this.logger.verbose(
+      `Added images to recommendation ${recommendation.title}`,
+    );
     await this.recommendationRepository.save(recommendation);
     return new MessageResponse('Рекомендация изменена');
   }
@@ -135,6 +141,9 @@ export class RecommendationsService {
         'У вас нет доступа чтобы изменять чужие рекомендации',
       );
     this.cloud.delete(image.url);
+    this.logger.verbose(
+      `Deleted image from recommendation ${image.recommendation.title}`,
+    );
     await this.imagesRepository.delete(image.id);
     return new MessageResponse('Изображение удалено');
   }
@@ -161,7 +170,7 @@ export class RecommendationsService {
 
   async update(recommendation: Partial<Recommendation>) {
     this.logger.verbose(
-      `Updating recommendation`,
+      `Updating recommendation with`,
       JSON.stringify(recommendation),
     );
     return await this.recommendationRepository.save(recommendation);
@@ -179,6 +188,9 @@ export class RecommendationsService {
     recommendation.images.forEach((image) => {
       this.cloud.delete(image.url);
     });
+    this.logger.verbose(
+      `${recommendation.author.email} deleted recommendation ${recommendation.title}`,
+    );
     await this.recommendationRepository.remove(recommendation);
     return new MessageResponse('Рекомендация удалена');
   }
