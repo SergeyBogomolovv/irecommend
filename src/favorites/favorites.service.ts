@@ -31,10 +31,14 @@ export class FavoritesService {
     });
 
     user.favorites.push(recommendation);
+    recommendation.favoritesCount++;
     this.logger.verbose(
       `User ${user.email} added ${recommendation.title} to favorites`,
     );
+
     await this.usersService.update(user);
+    await this.recommendationsService.update(recommendation);
+
     return new MessageResponse(
       `Рекомендация ${recommendation.title} добавлена в избранные`,
     );
@@ -49,10 +53,12 @@ export class FavoritesService {
     user.favorites = user.favorites.filter(
       ({ id }) => id !== recommendation.id,
     );
+    recommendation.favoritesCount--;
     this.logger.verbose(
       `User ${user.email} deleted ${recommendation.title} from favorites`,
     );
     await this.usersService.update(user);
+    await this.recommendationsService.update(recommendation);
     return new MessageResponse(
       `Рекомендация ${recommendation.title} удалена из избранного`,
     );

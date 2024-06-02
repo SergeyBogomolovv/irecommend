@@ -82,7 +82,11 @@ export class RecommendationsService {
     return new MessageResponse('Рекомендация создана');
   }
 
-  async update(id: string, authorId: string, dto: UpdateRecommendationInput) {
+  async updateText(
+    id: string,
+    authorId: string,
+    dto: UpdateRecommendationInput,
+  ) {
     const recommendation = await this.findOneByIdOrFail(id, ['author']);
     if (recommendation.author.id !== authorId)
       throw new ForbiddenException(
@@ -153,6 +157,14 @@ export class RecommendationsService {
     return fuse
       .search(query)
       .map((result: FuseResult<Recommendation>) => result.item);
+  }
+
+  async update(recommendation: Partial<Recommendation>) {
+    this.logger.verbose(
+      `Updating recommendation`,
+      JSON.stringify(recommendation),
+    );
+    return await this.recommendationRepository.save(recommendation);
   }
 
   async deleteRecommendation(id: string, authorId: string) {

@@ -63,7 +63,7 @@ export class RecommendationsResolver {
     @Args('payload', { type: () => UpdateRecommendationInput })
     payload: UpdateRecommendationInput,
   ) {
-    return this.recommendationsService.update(id, authorId, payload);
+    return this.recommendationsService.updateText(id, authorId, payload);
   }
 
   @UseGuards(GqlAuthGuard)

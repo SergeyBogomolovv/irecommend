@@ -55,6 +55,7 @@ type Recommendation {
   id: ID!
   title: String!
   description: String!
+  favoritesCount: Int!
   type: RecommendationType!
   link: String
   images: [Image!]
