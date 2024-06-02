@@ -21,10 +21,7 @@ export class Profile {
   @Field({ nullable: true })
   logo?: string;
 
-  @OneToMany(() => Contact, (contacts) => contacts.profile, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(() => Contact, (contacts) => contacts.profile)
   @Field(() => [Contact], { nullable: true })
   contacts: Contact[];
 }

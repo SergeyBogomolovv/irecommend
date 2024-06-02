@@ -11,9 +11,6 @@ import { RegisterDto } from './dto/register.dto';
 import { VerifyAccountDto } from './dto/verify.dto';
 import { PasswordResetRequestDto } from './dto/password-reset-request.dto';
 import { Response } from 'express';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '@app/shared/entities/user.entity';
-import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { HashingService } from './services/hashing.service';
 import { OtpMailDto } from 'src/mail/dto/otp-mail.dto';
@@ -23,12 +20,14 @@ import { AccessTokenResponse } from '../../libs/shared/src/dto/access.response';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import { MessageResponse } from '@app/shared/dto/message.response';
 import { format } from 'date-fns';
+import { UsersService } from 'src/users/users.service';
+import { Profile } from '@app/shared/entities/profile.entity';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly usersService: UsersService,
     private readonly eventEmitter: EventEmitter2,
     private readonly hashingService: HashingService,
     private readonly otpService: OtpService,
@@ -36,9 +35,7 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginDto, response: Response) {
-    const user = await this.userRepository.findOneByOrFail({
-      email: dto.email,
-    });
+    const user = await this.usersService.findOneByEmailOrFail(dto.email);
 
     const isPasswordValid = await this.hashingService.compare(
       dto.password,
@@ -50,9 +47,7 @@ export class AuthService {
     }
     const access_token = this.tokenService.generateAccessToken(user);
     const refresh_token = await this.tokenService.generateRefreshToken(user.id);
-    this.logger.verbose(
-      `User ${user.email} logined ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
-    );
+    this.logger.verbose(`${user.email} logined at ${this.date()}`);
     response.cookie('refresh_token', refresh_token.token, {
       httpOnly: true,
       sameSite: 'lax',
@@ -66,27 +61,22 @@ export class AuthService {
   }
 
   async register(dto: RegisterDto) {
-    const existingUser = await this.userRepository.findOneBy({
-      email: dto.email,
-    });
+    const existingUser = await this.usersService.findOneByEmail(dto.email);
     if (existingUser) {
       throw new ConflictException('Пользователь с такой почтой уже существует');
     }
     const hashedPassword = await this.hashingService.hash(dto.password);
-    const newUser = this.userRepository.create({
+    const newUser = await this.usersService.create({
       email: dto.email,
       password: hashedPassword,
-      profile: { name: dto.name },
+      profile: { ...new Profile(), name: dto.name },
     });
     const code = await this.otpService.generateVerifyAccountOtp(newUser.email);
     this.eventEmitter.emit(
       'send_activation_email',
       new OtpMailDto({ code, to: newUser.email }),
     );
-    this.logger.verbose(
-      `User ${newUser.email} registered ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
-    );
-    await this.userRepository.save(newUser);
+    this.logger.verbose(`${newUser.email} registered at ${this.date()}`);
     return new MessageResponse(
       `Сообщение с кодом подтверждения было отправлено на ${newUser.email}`,
     );
@@ -100,17 +90,17 @@ export class AuthService {
     if (!isCodeValid) {
       throw new UnauthorizedException('Код подтверждения неверный');
     }
-    const existingUser = await this.userRepository.findOneBy({
-      email: dto.email,
-    });
+    const existingUser = await this.usersService.findOneByEmailOrFail(
+      dto.email,
+    );
     existingUser.verified = true;
-    await this.userRepository.save(existingUser);
+    await this.usersService.update(existingUser);
     const access_token = this.tokenService.generateAccessToken(existingUser);
     const refresh_token = await this.tokenService.generateRefreshToken(
       existingUser.id,
     );
     this.logger.verbose(
-      `User ${existingUser.email} verified account ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
+      `${existingUser.email} verified account at ${this.date()})}`,
     );
     response.cookie('refresh_token', refresh_token.token, {
       httpOnly: true,
@@ -125,10 +115,9 @@ export class AuthService {
   }
 
   async passwordResetRequest(dto: PasswordResetRequestDto) {
-    const isUserExists = await this.userRepository.findOneBy({
-      email: dto.email,
-    });
-    if (!isUserExists) throw new BadRequestException('Аккаунт не найден');
+    const isUserExists = await this.usersService.findOneByEmailOrFail(
+      dto.email,
+    );
     const code = await this.otpService.generateResetPasswordOtp(
       isUserExists.email,
     );
@@ -137,7 +126,7 @@ export class AuthService {
       new OtpMailDto({ to: dto.email, code }),
     );
     this.logger.verbose(
-      `User ${dto.email} requested to change password ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
+      `${dto.email} requested to change password at ${this.date()}`,
     );
     return new MessageResponse(
       'Письмо с кодом потдверждения было отправлено вам на почту',
@@ -150,26 +139,20 @@ export class AuthService {
       dto.code,
     );
     if (!isCodeValid) throw new BadRequestException('Код неверный');
-    const user = await this.userRepository.findOneByOrFail({
-      email: dto.email,
-    });
+    const user = await this.usersService.findOneByEmailOrFail(dto.email);
     const hashedPassword = await this.hashingService.hash(dto.newPassword);
     user.password = hashedPassword;
-    this.logger.verbose(
-      `User ${user.email} changed password ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
-    );
-    await this.userRepository.save(user);
+    this.logger.verbose(`${user.email} changed password at ${this.date()}`);
+    await this.usersService.update(user);
     return new MessageResponse('Пароль успешно изменен');
   }
 
   async refresh(refreshToken: string) {
     const token = await this.tokenService.getRefreshToken(refreshToken);
     if (!token) throw new UnauthorizedException('Token expired');
-    const user = await this.userRepository.findOneByOrFail({
-      id: token.userId,
-    });
+    const user = await this.usersService.findOneByIdOrFail(token.userId);
     this.logger.verbose(
-      `User ${user.email} refreshed access token ${format(new Date(), 'dd.MM.yy HH:mm:ss')}`,
+      `${user.email} refreshed access token at ${this.date()}`,
     );
     const access_token = this.tokenService.generateAccessToken(user);
     return new AccessTokenResponse(access_token);
@@ -177,8 +160,13 @@ export class AuthService {
 
   async logout(response: Response, refreshToken: string) {
     await this.tokenService.deleteRefreshToken(refreshToken);
+    this.logger.verbose(`User logout at ${this.date()}`);
     return response
       .clearCookie('refresh_token')
       .json(new MessageResponse('Вы успешно вышли из аккаунта'));
+  }
+
+  private date() {
+    return format(new Date(), 'dd.MM.yy HH:mm:ss');
   }
 }

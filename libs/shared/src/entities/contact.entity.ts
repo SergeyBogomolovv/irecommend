@@ -34,7 +34,9 @@ export class Contact {
   @Field(() => Contacts)
   type: Contacts;
 
-  @ManyToOne(() => Profile, (profile) => profile.contacts)
+  @ManyToOne(() => Profile, (profile) => profile.contacts, {
+    onDelete: 'CASCADE',
+  })
   @HideField()
   profile: Profile;
 }

@@ -6,20 +6,24 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { User } from './user.entity';
 import { Image } from './image.entity';
 import { Comment } from './comments.entity';
 
 export enum RecommendationType {
-  movie = 'movie',
-  music = 'music',
-  anime = 'anime',
-  book = 'book',
-  hobby = 'hobby',
-  todo = 'todo',
-  series = 'series',
+  MOVIE = 'MOVIE',
+  MUSIC = 'MUSIC',
+  ANIME = 'ANIME',
+  BOOK = 'BOOK',
+  HOBBY = 'HOBBY',
+  TODO = 'TODO',
+  SERIES = 'SERIES',
 }
+
+registerEnumType(RecommendationType, {
+  name: 'RecommendationType',
+});
 
 @ObjectType()
 @Entity()
@@ -30,31 +34,31 @@ export class Recommendation {
 
   @Column()
   @Field()
+  title: string;
+
+  @Column()
+  @Field()
   description: string;
 
   @Column({ type: 'enum', enum: RecommendationType })
-  @Field()
+  @Field(() => RecommendationType)
   type: RecommendationType;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
   link?: string;
 
-  @OneToMany(() => Image, (image) => image.recommendation, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(() => Image, (image) => image.recommendation)
   @Field(() => [Image], { nullable: true })
   images: Image[];
 
-  @OneToMany(() => Comment, (comment) => comment.recommendation, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(() => Comment, (comment) => comment.recommendation)
   @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 
-  @ManyToOne(() => User, (author) => author.recommendations)
+  @ManyToOne(() => User, (author) => author.recommendations, {
+    onDelete: 'SET NULL',
+  })
   @Field(() => User, { nullable: true })
   author: User;
 

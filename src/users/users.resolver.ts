@@ -14,7 +14,7 @@ export class UsersResolver {
     @Args('id') id: string,
     @GqlRelations('one_user') relations: string[],
   ) {
-    return this.usersService.findOne(id, relations);
+    return this.usersService.findOneByEmailOrFail(id, relations);
   }
 
   @Query(() => [User], { name: 'search_users' })
