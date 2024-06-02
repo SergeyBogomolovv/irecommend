@@ -15,14 +15,12 @@ export class FriendRequest {
   readonly id: string;
 
   @ManyToOne(() => User, (user) => user.sendedFriendRequests, {
-    cascade: true,
     onDelete: 'CASCADE',
   })
   @Field(() => User, { nullable: true })
   sender: User;
 
   @ManyToOne(() => User, (user) => user.receivedFriendRequests, {
-    cascade: true,
     onDelete: 'CASCADE',
   })
   @Field(() => User, { nullable: true })

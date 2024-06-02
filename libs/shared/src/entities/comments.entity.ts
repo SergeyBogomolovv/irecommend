@@ -29,7 +29,7 @@ export class Comment {
   @HideField()
   recommendation: Recommendation;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn()
   @Field(() => User, { nullable: true })
   author: User;

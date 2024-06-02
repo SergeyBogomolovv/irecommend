@@ -50,11 +50,15 @@ export class User {
   @Field(() => [User], { nullable: true })
   friends: User[];
 
-  @OneToMany(() => FriendRequest, (request) => request.sender)
+  @OneToMany(() => FriendRequest, (request) => request.sender, {
+    cascade: true,
+  })
   @Field(() => [FriendRequest], { nullable: true })
   sendedFriendRequests: FriendRequest[];
 
-  @OneToMany(() => FriendRequest, (request) => request.recipient)
+  @OneToMany(() => FriendRequest, (request) => request.recipient, {
+    cascade: true,
+  })
   @Field(() => [FriendRequest], { nullable: true })
   receivedFriendRequests: FriendRequest[];
 
