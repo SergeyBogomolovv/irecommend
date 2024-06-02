@@ -106,8 +106,8 @@ type Mutation {
   delete_friend(friendId: String!): MessageResponse!
   create_recommendation(payload: CreateRecommendationInput!, images: [Upload!]!): MessageResponse!
   update_recommendation(id: String!, payload: UpdateRecommendationInput!): MessageResponse!
-  delete_recommendation_image(imageId: String!): MessageResponse!
-  add_recommendation_images(id: String!, images: [Upload!]!): MessageResponse!
+  delete_image_from_recommendation(imageId: String!): MessageResponse!
+  add_images_to_recommendation(id: String!, images: [Upload!]!): MessageResponse!
   delete_recommendation(id: String!): MessageResponse!
 }
 

@@ -67,7 +67,7 @@ export class RecommendationsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => MessageResponse, { name: 'delete_recommendation_image' })
+  @Mutation(() => MessageResponse, { name: 'delete_image_from_recommendation' })
   async deleteRecommendationImage(
     @UserFromGql('id') authorId: string,
     @Args('imageId') imageId: string,
@@ -76,7 +76,7 @@ export class RecommendationsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => MessageResponse, { name: 'add_recommendation_images' })
+  @Mutation(() => MessageResponse, { name: 'add_images_to_recommendation' })
   async addRecommendationImages(
     @UserFromGql('id') authorId: string,
     @Args('id') id: string,
