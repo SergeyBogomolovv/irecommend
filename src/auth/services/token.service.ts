@@ -1,4 +1,3 @@
-import { RefreshToken } from '@app/shared/types/refreshToken';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
@@ -6,8 +5,9 @@ import { v4 } from 'uuid';
 import { add } from 'date-fns';
 import { User } from '@app/shared/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
-import { UserJwtPayload } from '@app/shared/types/user.payload';
+import { UserJwtPayload } from '@app/shared/dto/user.payload';
 import { REFRESH_TOKEN_KEY } from '@app/shared/constants';
+import { RefreshToken } from '@app/shared/dto/refreshToken';
 
 @Injectable()
 export class TokenService {
