@@ -48,13 +48,6 @@ type Image {
   url: String!
 }
 
-type Comment {
-  id: ID!
-  content: String!
-  author: User
-  created_at: DateTime!
-}
-
 type Recommendation {
   id: ID!
   title: String!
@@ -90,6 +83,13 @@ type User {
   receivedFriendRequests: [FriendRequest!]
   recommendations: [Recommendation!]
   favorites: [Recommendation!]
+}
+
+type Comment {
+  id: ID!
+  content: String!
+  author: User
+  created_at: DateTime!
 }
 
 type Query {

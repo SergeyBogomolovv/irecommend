@@ -1,5 +1,4 @@
 import { ExceptionFilter, Catch, HttpException, Logger } from '@nestjs/common';
-import { GraphQLError } from 'graphql';
 
 @Catch(HttpException)
 export class GqlExceptionFilter implements ExceptionFilter {
@@ -8,13 +7,13 @@ export class GqlExceptionFilter implements ExceptionFilter {
     this.logger.error(
       `Error occured with message: ${exception.message}, with status: ${exception.getStatus()}`,
     );
-
-    throw new GraphQLError(exception.message, {
-      extensions: {
-        http: { status: exception.getStatus() },
+    throw new HttpException(
+      {
+        message: exception.message,
         timestamp: new Date().toISOString(),
-        code: exception.name,
+        statusCode: exception.getStatus(),
       },
-    });
+      exception.getStatus(),
+    );
   }
 }

@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   ConflictException,
-  HttpStatus,
   Injectable,
   Logger,
   UnauthorizedException,
@@ -53,9 +52,7 @@ export class AuthService {
       secure: false,
       path: '/',
     });
-    return response
-      .status(HttpStatus.CREATED)
-      .json(new AccessTokenResponse(access_token));
+    return new AccessTokenResponse(access_token);
   }
 
   async register(dto: RegisterInput) {
@@ -86,7 +83,7 @@ export class AuthService {
       dto.code,
     );
     if (!isCodeValid) {
-      throw new UnauthorizedException('Код подтверждения неверный');
+      throw new BadRequestException('Код подтверждения неверный');
     }
     const existingUser = await this.usersService.findOneByEmailOrFail(
       dto.email,
@@ -105,9 +102,7 @@ export class AuthService {
       secure: false,
       path: '/',
     });
-    return response
-      .status(HttpStatus.CREATED)
-      .json(new AccessTokenResponse(access_token));
+    return new AccessTokenResponse(access_token);
   }
 
   async passwordResetRequest(dto: PasswordResetRequestInput) {

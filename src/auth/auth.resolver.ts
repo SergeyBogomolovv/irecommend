@@ -14,7 +14,6 @@ import { AccessTokenResponse, MessageResponse, Serialize } from '@app/shared';
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
-  @Serialize(AccessTokenResponse)
   @Mutation(() => AccessTokenResponse, { name: 'login' })
   login(
     @Args('loginInput') loginInput: LoginInput,
@@ -28,7 +27,6 @@ export class AuthResolver {
     return this.authService.register(registerInput);
   }
 
-  @Serialize(AccessTokenResponse)
   @Mutation(() => AccessTokenResponse, { name: 'verify_account' })
   verifyAccount(
     @Args('verifyAccountInput') verifyAccountInput: VerifyAccountInput,
