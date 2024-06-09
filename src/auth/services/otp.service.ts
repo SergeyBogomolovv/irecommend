@@ -1,4 +1,4 @@
-import { RESET_PASSWORD_KEY, VERIFY_ACCOUNT_KEY } from '@app/shared/constants';
+import { RESET_PASSWORD_KEY, VERIFY_ACCOUNT_KEY } from '@app/shared';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';

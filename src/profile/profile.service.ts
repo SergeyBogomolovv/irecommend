@@ -5,10 +5,9 @@ import { S3Service } from 'src/s3/s3.service';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AddContactDto } from './dto/add-contact.input';
-import { Contact } from '@app/shared/entities/contact.entity';
-import { MessageResponse } from '@app/shared/dto/message.response';
 import { UsersService } from 'src/users/users.service';
 import { FileUpload } from 'graphql-upload-ts';
+import { Contact, MessageResponse } from '@app/shared';
 
 @Injectable()
 export class ProfileService {

@@ -1,18 +1,23 @@
+import { Field, InputType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
-export class RegisterDto {
+@InputType()
+export class RegisterInput {
   @ApiProperty({ title: 'Имя', example: 'Иван' })
   @IsString()
   @IsNotEmpty()
+  @Field()
   readonly name: string;
 
   @ApiProperty({ title: 'Почта', example: 'example@gmail.com' })
   @IsEmail()
+  @Field()
   readonly email: string;
 
   @ApiProperty({ title: 'Пароль', example: '123456' })
   @IsString()
   @MinLength(6)
+  @Field()
   readonly password: string;
 }

@@ -7,8 +7,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Field, HideField, ID, ObjectType } from '@nestjs/graphql';
-import { Recommendation } from './recommendation.entity';
 import { User } from './user.entity';
+import { Recommendation } from './recommendation.entity';
 
 @ObjectType()
 @Entity()

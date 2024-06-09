@@ -1,8 +1,4 @@
 import {
-  Recommendation,
-  RecommendationType,
-} from '@app/shared/entities/recommendation.entity';
-import {
   ForbiddenException,
   Injectable,
   Logger,
@@ -14,10 +10,14 @@ import { CreateRecommendationInput } from './dto/create-recommendation.input';
 import { UsersService } from 'src/users/users.service';
 import { FileUpload } from 'graphql-upload-ts';
 import { S3Service } from 'src/s3/s3.service';
-import { Image } from '@app/shared/entities/image.entity';
-import { MessageResponse } from '@app/shared/dto/message.response';
 import { UpdateRecommendationInput } from './dto/update-recommendation.input';
 import { FuseResult } from 'fuse.js';
+import {
+  Image,
+  MessageResponse,
+  Recommendation,
+  RecommendationType,
+} from '@app/shared';
 const Fuse = require('fuse.js');
 
 @Injectable()

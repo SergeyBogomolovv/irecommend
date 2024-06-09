@@ -3,15 +3,15 @@ import { RecommendationsService } from './recommendations.service';
 import { MessageResponse } from '@app/shared/dto/message.response';
 import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from '@app/shared/guards/gql-auth.guard';
+import { CreateRecommendationInput } from './dto/create-recommendation.input';
+import { UpdateRecommendationInput } from './dto/update-recommendation.input';
 import {
+  GqlAuthGuard,
+  GqlRelations,
   Recommendation,
   RecommendationType,
-} from '@app/shared/entities/recommendation.entity';
-import { GqlRelations } from '@app/shared/decorators/gql-relations.decorator';
-import { CreateRecommendationInput } from './dto/create-recommendation.input';
-import { UserFromGql } from '@app/shared/decorators/user-gql.decorator';
-import { UpdateRecommendationInput } from './dto/update-recommendation.input';
+  UserFromGql,
+} from '@app/shared';
 
 @Resolver()
 export class RecommendationsResolver {

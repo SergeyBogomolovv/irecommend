@@ -9,13 +9,6 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { MailModule } from './mail/mail.module';
 import { AuthModule } from './auth/auth.module';
-import { Comment } from '@app/shared/entities/comments.entity';
-import { Contact } from '@app/shared/entities/contact.entity';
-import { FriendRequest } from '@app/shared/entities/friend-request.entity';
-import { Image } from '@app/shared/entities/image.entity';
-import { Profile } from '@app/shared/entities/profile.entity';
-import { User } from '@app/shared/entities/user.entity';
-import { Recommendation } from '@app/shared/entities/recommendation.entity';
 import { UsersModule } from './users/users.module';
 import { S3Module } from './s3/s3.module';
 import { ProfileModule } from './profile/profile.module';
@@ -23,6 +16,15 @@ import { FriendsModule } from './friends/friends.module';
 import { RecommendationsModule } from './recommendations/recommendations.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { CommentsModule } from './comments/comments.module';
+import {
+  Comment,
+  Contact,
+  FriendRequest,
+  Image,
+  Profile,
+  Recommendation,
+  User,
+} from '@app/shared';
 
 @Module({
   imports: [
@@ -95,6 +97,7 @@ import { CommentsModule } from './comments/comments.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/schema.gql',
+      context: ({ req, res }) => ({ req, res }),
     }),
     MailModule,
     AuthModule,

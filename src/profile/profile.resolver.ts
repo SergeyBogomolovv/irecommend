@@ -1,14 +1,16 @@
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { ProfileService } from './profile.service';
-import { GqlAuthGuard } from '@app/shared/guards/gql-auth.guard';
 import { SerializeOptions, UseGuards } from '@nestjs/common';
-import { User } from '@app/shared/entities/user.entity';
-import { UserFromGql } from '@app/shared/decorators/user-gql.decorator';
-import { GqlRelations } from '@app/shared/decorators/gql-relations.decorator';
 import { UpdateProfileDto } from './dto/update-profile.input';
 import { AddContactDto } from './dto/add-contact.input';
-import { MessageResponse } from '@app/shared/dto/message.response';
 import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
+import {
+  GqlAuthGuard,
+  GqlRelations,
+  MessageResponse,
+  User,
+  UserFromGql,
+} from '@app/shared';
 
 @Resolver()
 export class ProfileResolver {

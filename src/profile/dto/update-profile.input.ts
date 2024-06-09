@@ -1,4 +1,4 @@
-import { Profile } from '@app/shared/entities/profile.entity';
+import { Profile } from '@app/shared';
 import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()

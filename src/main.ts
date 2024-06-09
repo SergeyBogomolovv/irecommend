@@ -12,7 +12,7 @@ import {
   Logger,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiExceptionFilter } from '@app/shared/filters/api.filter';
+import { GqlExceptionFilter } from '@app/shared';
 
 async function bootstrap() {
   const logger = new Logger('bootstrap');
@@ -27,7 +27,9 @@ async function bootstrap() {
       crossOriginResourcePolicy: false,
     }),
   );
+
   app.use('/graphql', graphqlUploadExpress());
+
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors) => {
@@ -38,7 +40,8 @@ async function bootstrap() {
       stopAtFirstError: true,
     }),
   );
-  app.useGlobalFilters(new ApiExceptionFilter());
+
+  app.useGlobalFilters(new GqlExceptionFilter());
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 

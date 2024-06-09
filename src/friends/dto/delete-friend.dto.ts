@@ -1,4 +1,4 @@
-import { User } from '@app/shared/entities/user.entity';
+import { User } from '@app/shared';
 
 export class DeleteFriendDto {
   constructor(payload: DeleteFriendDto) {

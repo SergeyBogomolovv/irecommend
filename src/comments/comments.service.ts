@@ -1,5 +1,4 @@
-import { MessageResponse } from '@app/shared/dto/message.response';
-import { Comment } from '@app/shared/entities/comments.entity';
+import { Comment, MessageResponse } from '@app/shared';
 import {
   ForbiddenException,
   Injectable,

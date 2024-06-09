@@ -38,7 +38,7 @@ export class UsersService {
       where: { id },
       relations,
     });
-    this.logger.verbose(`User ${user.email} found by id`);
+    if (user) this.logger.verbose(`User ${user.email} found by id`);
     return user;
   }
 
@@ -47,7 +47,7 @@ export class UsersService {
       where: { email },
       relations,
     });
-    this.logger.verbose(`User ${user.email} found by email`);
+    if (user) this.logger.verbose(`User ${user.email} found by email`);
     return user;
   }
 

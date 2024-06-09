@@ -1,5 +1,4 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { ApiProperty } from '@nestjs/swagger';
 
 @ObjectType()
 export class MessageResponse {
@@ -7,7 +6,6 @@ export class MessageResponse {
     this.message = message;
   }
 
-  @ApiProperty({ title: 'Сообщение с информацией' })
   @Field()
   readonly message: string;
 }

@@ -1,4 +1,4 @@
-import { MessageResponse } from '@app/shared/dto/message.response';
+import { MessageResponse } from '@app/shared';
 import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { RecommendationsService } from 'src/recommendations/recommendations.service';
 import { UsersService } from 'src/users/users.service';

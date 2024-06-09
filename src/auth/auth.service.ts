@@ -6,10 +6,10 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
-import { VerifyAccountDto } from './dto/verify.dto';
-import { PasswordResetRequestDto } from './dto/password-reset-request.dto';
+import { LoginInput } from './dto/login.input';
+import { RegisterInput } from './dto/register.input';
+import { VerifyAccountInput } from './dto/verify.input';
+import { PasswordResetRequestInput } from './dto/password-reset-request.input';
 import { Response } from 'express';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { HashingService } from './services/hashing.service';
@@ -17,10 +17,9 @@ import { OtpMailDto } from 'src/mail/dto/otp-mail.dto';
 import { OtpService } from './services/otp.service';
 import { TokenService } from './services/token.service';
 import { AccessTokenResponse } from '../../libs/shared/src/dto/access.response';
-import { PasswordResetDto } from './dto/password-reset.dto';
-import { MessageResponse } from '@app/shared/dto/message.response';
+import { PasswordResetInput } from './dto/password-reset.input';
 import { UsersService } from 'src/users/users.service';
-import { Profile } from '@app/shared/entities/profile.entity';
+import { MessageResponse, Profile } from '@app/shared';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +32,7 @@ export class AuthService {
     private readonly tokenService: TokenService,
   ) {}
 
-  async login(dto: LoginDto, response: Response) {
+  async login(dto: LoginInput, response: Response) {
     const user = await this.usersService.findOneByEmailOrFail(dto.email);
 
     const isPasswordValid = await this.hashingService.compare(
@@ -59,7 +58,7 @@ export class AuthService {
       .json(new AccessTokenResponse(access_token));
   }
 
-  async register(dto: RegisterDto) {
+  async register(dto: RegisterInput) {
     const existingUser = await this.usersService.findOneByEmail(dto.email);
     if (existingUser) {
       throw new ConflictException('Пользователь с такой почтой уже существует');
@@ -81,7 +80,7 @@ export class AuthService {
     );
   }
 
-  async verifyAccount(dto: VerifyAccountDto, response: Response) {
+  async verifyAccount(dto: VerifyAccountInput, response: Response) {
     const isCodeValid = await this.otpService.validateVerifyAccountOtp(
       dto.email,
       dto.code,
@@ -111,7 +110,7 @@ export class AuthService {
       .json(new AccessTokenResponse(access_token));
   }
 
-  async passwordResetRequest(dto: PasswordResetRequestDto) {
+  async passwordResetRequest(dto: PasswordResetRequestInput) {
     const isUserExists = await this.usersService.findOneByEmailOrFail(
       dto.email,
     );
@@ -128,7 +127,7 @@ export class AuthService {
     );
   }
 
-  async passwordReset(dto: PasswordResetDto) {
+  async passwordReset(dto: PasswordResetInput) {
     const isCodeValid = await this.otpService.validateResetPasswordOtp(
       dto.email,
       dto.code,

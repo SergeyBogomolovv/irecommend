@@ -24,6 +24,7 @@ export class MailService {
     this.logger.verbose(`Sending verification email to ${dto.to}`);
     this.transporter.sendMail({
       to: dto.to,
+      subject: 'Подтвердите вашу почту',
       html: `
       <!doctype html>
       <html lang="ru">
@@ -109,6 +110,7 @@ export class MailService {
     this.logger.verbose(`Sending reset password email to ${dto.to}`);
     this.transporter.sendMail({
       to: dto.to,
+      subject: 'Сброс пароля',
       html: `
       <!doctype html>
       <html lang="ru">

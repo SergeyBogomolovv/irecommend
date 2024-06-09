@@ -1,5 +1,3 @@
-import { MessageResponse } from '@app/shared/dto/message.response';
-import { FriendRequest } from '@app/shared/entities/friend-request.entity';
 import {
   ConflictException,
   Injectable,
@@ -12,6 +10,7 @@ import { Repository } from 'typeorm';
 import { AddFriendDto } from './dto/add-friend.dto';
 import { DeleteFriendDto } from './dto/delete-friend.dto';
 import { UsersService } from 'src/users/users.service';
+import { FriendRequest, MessageResponse } from '@app/shared';
 
 @Injectable()
 export class FriendsService {

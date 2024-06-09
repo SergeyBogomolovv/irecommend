@@ -1,9 +1,7 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { FriendsService } from './friends.service';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from '@app/shared/guards/gql-auth.guard';
-import { MessageResponse } from '@app/shared/dto/message.response';
-import { UserFromGql } from '@app/shared/decorators/user-gql.decorator';
+import { GqlAuthGuard, MessageResponse, UserFromGql } from '@app/shared';
 
 @Resolver()
 export class FriendsResolver {
