@@ -19,6 +19,8 @@ import { AccessTokenResponse } from '../../libs/shared/src/dto/access.response';
 import { PasswordResetInput } from './dto/password-reset.input';
 import { UsersService } from 'src/users/users.service';
 import { MessageResponse, Profile } from '@app/shared';
+import { VerifyResponse } from '@app/shared/dto/verify.response';
+import { ValidateAuthResponse } from '@app/shared/dto/validate_auth.response';
 
 @Injectable()
 export class AuthService {
@@ -32,7 +34,9 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginInput, response: Response) {
-    const user = await this.usersService.findOneByEmailOrFail(dto.email);
+    const user = await this.usersService.findOneByEmailOrFail(dto.email, [
+      'profile',
+    ]);
 
     const isPasswordValid = await this.hashingService.compare(
       dto.password,
@@ -72,9 +76,10 @@ export class AuthService {
       new OtpMailDto({ code, to: newUser.email }),
     );
     this.logger.verbose(`${newUser.email} registered`);
-    return new MessageResponse(
-      `Сообщение с кодом подтверждения было отправлено на ${newUser.email}`,
-    );
+    return new VerifyResponse({
+      message: `Сообщение с кодом подтверждения было отправлено на ${newUser.email}`,
+      email: newUser.email,
+    });
   }
 
   async verifyAccount(dto: VerifyAccountInput, response: Response) {
@@ -87,6 +92,7 @@ export class AuthService {
     }
     const existingUser = await this.usersService.findOneByEmailOrFail(
       dto.email,
+      ['profile'],
     );
     existingUser.verified = true;
     await this.usersService.update(existingUser);
@@ -117,9 +123,10 @@ export class AuthService {
       new OtpMailDto({ to: dto.email, code }),
     );
     this.logger.verbose(`${dto.email} requested to change password`);
-    return new MessageResponse(
-      'Письмо с кодом потдверждения было отправлено вам на почту',
-    );
+    return new VerifyResponse({
+      message: 'Письмо с кодом потдверждения было отправлено вам на почту',
+      email: dto.email,
+    });
   }
 
   async passwordReset(dto: PasswordResetInput) {
@@ -139,17 +146,24 @@ export class AuthService {
   async refresh(refreshToken: string) {
     const token = await this.tokenService.getRefreshToken(refreshToken);
     if (!token) throw new UnauthorizedException('Token expired');
-    const user = await this.usersService.findOneByIdOrFail(token.userId);
+    const user = await this.usersService.findOneByIdOrFail(token.userId, [
+      'profile',
+    ]);
     this.logger.verbose(`${user.email} refreshed access token`);
     const access_token = this.tokenService.generateAccessToken(user);
     return new AccessTokenResponse(access_token);
   }
 
+  async validateAuth(refreshToken: string) {
+    if (!refreshToken) return new ValidateAuthResponse(false);
+    const token = await this.tokenService.getRefreshToken(refreshToken);
+    return new ValidateAuthResponse(!!token);
+  }
+
   async logout(response: Response, refreshToken: string) {
     await this.tokenService.deleteRefreshToken(refreshToken);
     this.logger.verbose(`User logout`);
-    return response
-      .clearCookie('refresh_token')
-      .json(new MessageResponse('Вы успешно вышли из аккаунта'));
+    response.clearCookie('refresh_token');
+    return new MessageResponse('Вы успешно вышли из аккаунта');
   }
 }
