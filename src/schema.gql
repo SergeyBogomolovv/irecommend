@@ -116,7 +116,7 @@ type Mutation {
   login(loginInput: LoginInput!): AccessTokenResponse!
   register(registerInput: RegisterInput!): VerifyResponse!
   verify_account(verifyAccountInput: VerifyAccountInput!): AccessTokenResponse!
-  password_reset_request(passwordResetRequestInput: PasswordResetRequestInput!): VerifyResponse!
+  password_reset_request(email: String!): VerifyResponse!
   password_reset(passwordResetInput: PasswordResetInput!): MessageResponse!
   logout: MessageResponse!
   update_profile(payload: UpdateProfileDto!, image: Upload): User!
@@ -153,10 +153,6 @@ input RegisterInput {
 input VerifyAccountInput {
   email: String!
   code: String!
-}
-
-input PasswordResetRequestInput {
-  email: String!
 }
 
 input PasswordResetInput {

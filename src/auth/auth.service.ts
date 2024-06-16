@@ -8,7 +8,6 @@ import {
 import { LoginInput } from './dto/login.input';
 import { RegisterInput } from './dto/register.input';
 import { VerifyAccountInput } from './dto/verify.input';
-import { PasswordResetRequestInput } from './dto/password-reset-request.input';
 import { Response } from 'express';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { HashingService } from './services/hashing.service';
@@ -111,21 +110,19 @@ export class AuthService {
     return new AccessTokenResponse(access_token);
   }
 
-  async passwordResetRequest(dto: PasswordResetRequestInput) {
-    const isUserExists = await this.usersService.findOneByEmailOrFail(
-      dto.email,
-    );
+  async passwordResetRequest(email: string) {
+    const isUserExists = await this.usersService.findOneByEmailOrFail(email);
     const code = await this.otpService.generateResetPasswordOtp(
       isUserExists.email,
     );
     this.eventEmitter.emit(
       'send_password_reset_email',
-      new OtpMailDto({ to: dto.email, code }),
+      new OtpMailDto({ to: email, code }),
     );
-    this.logger.verbose(`${dto.email} requested to change password`);
+    this.logger.verbose(`${email} requested to change password`);
     return new VerifyResponse({
       message: 'Письмо с кодом потдверждения было отправлено вам на почту',
-      email: dto.email,
+      email: email,
     });
   }
 

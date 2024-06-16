@@ -4,7 +4,6 @@ import { AuthService } from './auth.service';
 import { LoginInput } from './dto/login.input';
 import { RegisterInput } from './dto/register.input';
 import { VerifyAccountInput } from './dto/verify.input';
-import { PasswordResetRequestInput } from './dto/password-reset-request.input';
 import { PasswordResetInput } from './dto/password-reset.input';
 import { Response, Request } from 'express';
 import { AccessTokenResponse, MessageResponse } from '@app/shared';
@@ -38,11 +37,8 @@ export class AuthResolver {
   }
 
   @Mutation(() => VerifyResponse, { name: 'password_reset_request' })
-  passwordResetRequest(
-    @Args('passwordResetRequestInput')
-    passwordResetRequestInput: PasswordResetRequestInput,
-  ) {
-    return this.authService.passwordResetRequest(passwordResetRequestInput);
+  passwordResetRequest(@Args('email') email: string) {
+    return this.authService.passwordResetRequest(email);
   }
 
   @Mutation(() => MessageResponse, { name: 'password_reset' })
