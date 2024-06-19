@@ -28,16 +28,12 @@ export class RecommendationsResolver {
   }
 
   @Query(() => [Recommendation], { name: 'last_recommendations' })
-  getMany(@GqlRelations('last_recommendations') relations: string[]) {
-    return this.recommendationsService.getLast(relations);
-  }
-
-  @Query(() => [Recommendation], { name: 'get_recommendations_by_type' })
-  findManyByType(
-    @Args('type', { type: () => RecommendationType }) type: RecommendationType,
-    @GqlRelations('get_recommendations_by_type') relations: string[],
+  getMany(
+    @Args('type', { type: () => RecommendationType, nullable: true })
+    type: RecommendationType,
+    @GqlRelations('last_recommendations') relations: string[],
   ) {
-    return this.recommendationsService.findByType(type, relations);
+    return this.recommendationsService.getLast(type, relations);
   }
 
   @Query(() => Recommendation, { name: 'get_recommendation_by_id' })

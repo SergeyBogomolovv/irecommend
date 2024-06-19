@@ -43,22 +43,19 @@ export class RecommendationsService {
     return recommendation;
   }
 
-  async findByType(type: RecommendationType, relations?: string[]) {
-    const recommendations = await this.recommendationRepository.find({
-      where: { type },
-      relations,
-    });
-    this.logger.verbose(`Getting many recommendations with type ${type}`);
-    return recommendations;
-  }
+  async getLast(type?: RecommendationType, relations?: string[]) {
+    if (type) {
+      return await this.recommendationRepository.find({
+        where: { type },
+        relations,
+        order: { created_at: 'DESC' },
+      });
+    }
 
-  async getLast(relations?: string[]) {
-    const recommendations = await this.recommendationRepository.find({
+    return await this.recommendationRepository.find({
       relations,
       order: { created_at: 'DESC' },
     });
-    this.logger.verbose(`Getting many last recommendations`);
-    return recommendations;
   }
 
   async create(
