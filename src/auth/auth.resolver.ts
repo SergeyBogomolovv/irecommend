@@ -8,7 +8,6 @@ import { PasswordResetInput } from './dto/password-reset.input';
 import { Response, Request } from 'express';
 import { AccessTokenResponse, MessageResponse } from '@app/shared';
 import { VerifyResponse } from '@app/shared/dto/verify.response';
-import { ValidateAuthResponse } from '@app/shared/dto/validate_auth.response';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Resolver()
@@ -52,11 +51,6 @@ export class AuthResolver {
   refresh(@Context('req') request: Request) {
     const refreshToken = request.cookies['refresh_token'];
     return this.authService.refresh(refreshToken);
-  }
-
-  @Query(() => ValidateAuthResponse, { name: 'validate_auth' })
-  validateAuth(@Args('refreshToken', { nullable: true }) refreshToken: string) {
-    return this.authService.validateAuth(refreshToken);
   }
 
   @Mutation(() => MessageResponse, { name: 'logout' })

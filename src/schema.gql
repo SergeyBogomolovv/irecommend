@@ -97,13 +97,8 @@ type VerifyResponse {
   email: String!
 }
 
-type ValidateAuthResponse {
-  authenticated: Boolean!
-}
-
 type Query {
   refresh: AccessTokenResponse!
-  validate_auth(refreshToken: String): ValidateAuthResponse!
   one_user(id: String!): User!
   search_users(name: String!): [User!]!
   profile: User!

@@ -19,7 +19,6 @@ import { PasswordResetInput } from './dto/password-reset.input';
 import { UsersService } from 'src/users/users.service';
 import { MessageResponse, Profile } from '@app/shared';
 import { VerifyResponse } from '@app/shared/dto/verify.response';
-import { ValidateAuthResponse } from '@app/shared/dto/validate_auth.response';
 
 @Injectable()
 export class AuthService {
@@ -149,12 +148,6 @@ export class AuthService {
     this.logger.verbose(`${user.email} refreshed access token`);
     const access_token = this.tokenService.generateAccessToken(user);
     return new AccessTokenResponse(access_token);
-  }
-
-  async validateAuth(refreshToken: string) {
-    if (!refreshToken) return new ValidateAuthResponse(false);
-    const token = await this.tokenService.getRefreshToken(refreshToken);
-    return new ValidateAuthResponse(!!token);
   }
 
   async logout(response: Response, refreshToken: string) {
