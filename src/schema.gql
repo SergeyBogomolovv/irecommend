@@ -103,6 +103,7 @@ type Query {
   search_users(name: String!): [User!]!
   profile: User!
   search_recommendations(query: String!): [Recommendation!]!
+  last_recommendations: [Recommendation!]!
   get_recommendations_by_type(type: RecommendationType!): [Recommendation!]!
   get_recommendation_by_id(id: String!): Recommendation!
 }

@@ -52,6 +52,15 @@ export class RecommendationsService {
     return recommendations;
   }
 
+  async getLast(relations?: string[]) {
+    const recommendations = await this.recommendationRepository.find({
+      relations,
+      order: { created_at: 'DESC' },
+    });
+    this.logger.verbose(`Getting many last recommendations`);
+    return recommendations;
+  }
+
   async create(
     authorId: string,
     payload: CreateRecommendationInput,

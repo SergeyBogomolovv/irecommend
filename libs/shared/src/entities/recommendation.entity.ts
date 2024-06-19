@@ -12,15 +12,14 @@ import { Image } from './image.entity';
 import { Comment } from './comments.entity';
 
 export enum RecommendationType {
-  MOVIE = 'MOVIE',
-  MUSIC = 'MUSIC',
-  ANIME = 'ANIME',
-  BOOK = 'BOOK',
-  HOBBY = 'HOBBY',
-  TODO = 'TODO',
-  SERIES = 'SERIES',
+  MOVIE = 'movie',
+  MUSIC = 'music',
+  ANIME = 'anime',
+  BOOK = 'book',
+  HOBBY = 'hobby',
+  TODO = 'todo',
+  SERIES = 'series',
 }
-
 registerEnumType(RecommendationType, {
   name: 'RecommendationType',
 });
