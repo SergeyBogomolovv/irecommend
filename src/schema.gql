@@ -90,6 +90,7 @@ type User {
 type Comment {
   id: ID!
   content: String!
+  recommendationId: String!
   author: User!
   created_at: DateTime!
 }

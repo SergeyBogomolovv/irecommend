@@ -39,6 +39,7 @@ export class CommentsService {
     const comment = this.commentsRepository.create({
       author,
       recommendation,
+      recommendationId: recommendation.id,
       content,
     });
     recommendation.comments.push(comment);
