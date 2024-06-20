@@ -1,4 +1,5 @@
 import {
+  Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
@@ -17,14 +18,22 @@ export class FriendRequest {
   @ManyToOne(() => User, (user) => user.sendedFriendRequests, {
     onDelete: 'CASCADE',
   })
-  @Field(() => User, { nullable: true })
+  @Field(() => User)
   sender: User;
+
+  @Column()
+  @Field()
+  senderId: string;
 
   @ManyToOne(() => User, (user) => user.receivedFriendRequests, {
     onDelete: 'CASCADE',
   })
-  @Field(() => User, { nullable: true })
+  @Field(() => User)
   recipient: User;
+
+  @Column()
+  @Field()
+  recipientId: string;
 
   @CreateDateColumn()
   @Field(() => Date)

@@ -26,15 +26,17 @@ enum Contacts {
 type Profile {
   id: ID!
   name: String!
-  about: String
+  about: String!
   logo: String
-  contacts: [Contact!]
+  contacts: [Contact!]!
 }
 
 type FriendRequest {
   id: ID!
-  sender: User
-  recipient: User
+  sender: User!
+  senderId: String!
+  recipient: User!
+  recipientId: String!
   created_at: DateTime!
 }
 
@@ -55,9 +57,9 @@ type Recommendation {
   favoritesCount: Int!
   type: RecommendationType!
   link: String
-  images: [Image!]
-  comments: [Comment!]
-  author: User
+  images: [Image!]!
+  comments: [Comment!]!
+  author: User!
   created_at: DateTime!
 }
 
@@ -77,18 +79,18 @@ type User {
   email: String
   password: String
   verified: Boolean!
-  profile: Profile
-  friends: [User!]
-  sendedFriendRequests: [FriendRequest!]
-  receivedFriendRequests: [FriendRequest!]
-  recommendations: [Recommendation!]
-  favorites: [Recommendation!]
+  profile: Profile!
+  friends: [User!]!
+  sendedFriendRequests: [FriendRequest!]!
+  receivedFriendRequests: [FriendRequest!]!
+  recommendations: [Recommendation!]!
+  favorites: [Recommendation!]!
 }
 
 type Comment {
   id: ID!
   content: String!
-  author: User
+  author: User!
   created_at: DateTime!
 }
 

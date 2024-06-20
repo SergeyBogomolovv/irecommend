@@ -14,7 +14,7 @@ export class Profile {
   name: string;
 
   @Column({ nullable: true })
-  @Field({ nullable: true })
+  @Field()
   about?: string;
 
   @Column({ nullable: true })
@@ -22,6 +22,6 @@ export class Profile {
   logo?: string;
 
   @OneToMany(() => Contact, (contacts) => contacts.profile, { cascade: true })
-  @Field(() => [Contact], { nullable: true })
+  @Field(() => [Contact])
   contacts: Contact[];
 }

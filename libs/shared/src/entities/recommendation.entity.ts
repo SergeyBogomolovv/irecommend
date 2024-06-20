@@ -20,6 +20,7 @@ export enum RecommendationType {
   TODO = 'todo',
   SERIES = 'series',
 }
+
 registerEnumType(RecommendationType, {
   name: 'RecommendationType',
 });
@@ -52,19 +53,19 @@ export class Recommendation {
   link?: string;
 
   @OneToMany(() => Image, (image) => image.recommendation, { cascade: true })
-  @Field(() => [Image], { nullable: true })
+  @Field(() => [Image])
   images: Image[];
 
   @OneToMany(() => Comment, (comment) => comment.recommendation, {
     cascade: true,
   })
-  @Field(() => [Comment], { nullable: true })
+  @Field(() => [Comment])
   comments: Comment[];
 
   @ManyToOne(() => User, (author) => author.recommendations, {
     onDelete: 'SET NULL',
   })
-  @Field(() => User, { nullable: true })
+  @Field(() => User)
   author: User;
 
   @CreateDateColumn()

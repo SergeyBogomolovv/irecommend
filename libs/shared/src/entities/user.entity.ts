@@ -42,32 +42,32 @@ export class User {
 
   @OneToOne(() => Profile, { cascade: true })
   @JoinColumn()
-  @Field(() => Profile, { nullable: true })
+  @Field(() => Profile)
   profile: Profile;
 
   @ManyToMany(() => User)
   @JoinTable()
-  @Field(() => [User], { nullable: true })
+  @Field(() => [User])
   friends: User[];
 
   @OneToMany(() => FriendRequest, (request) => request.sender, {
     cascade: true,
   })
-  @Field(() => [FriendRequest], { nullable: true })
+  @Field(() => [FriendRequest])
   sendedFriendRequests: FriendRequest[];
 
   @OneToMany(() => FriendRequest, (request) => request.recipient, {
     cascade: true,
   })
-  @Field(() => [FriendRequest], { nullable: true })
+  @Field(() => [FriendRequest])
   receivedFriendRequests: FriendRequest[];
 
   @OneToMany(() => Recommendation, (recommendation) => recommendation.author)
-  @Field(() => [Recommendation], { nullable: true })
+  @Field(() => [Recommendation])
   recommendations: Recommendation[];
 
   @ManyToMany(() => Recommendation)
   @JoinTable()
-  @Field(() => [Recommendation], { nullable: true })
+  @Field(() => [Recommendation])
   favorites: Recommendation[];
 }

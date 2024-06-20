@@ -31,7 +31,7 @@ export class Comment {
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn()
-  @Field(() => User, { nullable: true })
+  @Field(() => User)
   author: User;
 
   @CreateDateColumn()

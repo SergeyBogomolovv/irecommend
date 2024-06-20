@@ -30,7 +30,9 @@ export class FriendsService {
     await this.friendRequestsRepository.save(
       this.friendRequestsRepository.create({
         sender: user,
+        senderId: user.id,
         recipient: friend,
+        recipientId: friend.id,
       }),
     );
     this.logger.verbose(`${user.email} sent friend request to ${friend.email}`);
@@ -67,7 +69,7 @@ export class FriendsService {
       where: { id: requestId },
       relations: { sender: { friends: true }, recipient: { friends: true } },
     });
-    if (request.recipient.id !== userId)
+    if (request.recipientId !== userId)
       throw new UnauthorizedException(
         'Заявку в друзья может принять только получатель',
       );
