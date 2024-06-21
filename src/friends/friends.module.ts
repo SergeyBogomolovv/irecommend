@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import { FriendsResolver } from './friends.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FriendRequest, SharedModule } from '@app/shared';
+import { SharedModule } from '@app/shared';
 import { UsersModule } from 'src/users/users.module';
+import { FriendRequest } from 'src/entities/friend-request.entity';
 
 @Module({
   imports: [

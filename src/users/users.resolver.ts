@@ -1,7 +1,7 @@
 import { Resolver, Query, Args } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
-import { User } from '@app/shared/entities/user.entity';
+import { User } from 'src/entities/user.entity';
 import { GqlRelations } from '@app/shared/decorators/gql-relations.decorator';
 
 @UseInterceptors(ClassSerializerInterceptor)

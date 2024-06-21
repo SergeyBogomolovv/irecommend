@@ -12,12 +12,12 @@ import { FileUpload } from 'graphql-upload-ts';
 import { S3Service } from 'src/s3/s3.service';
 import { UpdateRecommendationInput } from './dto/update-recommendation.input';
 import { FuseResult } from 'fuse.js';
+import { MessageResponse } from '@app/shared';
+import { Image } from 'src/entities/image.entity';
 import {
-  Image,
-  MessageResponse,
   Recommendation,
   RecommendationType,
-} from '@app/shared';
+} from 'src/entities/recommendation.entity';
 const Fuse = require('fuse.js');
 
 @Injectable()

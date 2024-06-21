@@ -5,13 +5,11 @@ import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
 import { UseGuards } from '@nestjs/common';
 import { CreateRecommendationInput } from './dto/create-recommendation.input';
 import { UpdateRecommendationInput } from './dto/update-recommendation.input';
+import { GqlAuthGuard, GqlRelations, UserFromGql } from '@app/shared';
 import {
-  GqlAuthGuard,
-  GqlRelations,
   Recommendation,
   RecommendationType,
-  UserFromGql,
-} from '@app/shared';
+} from 'src/entities/recommendation.entity';
 
 @Resolver()
 export class RecommendationsResolver {

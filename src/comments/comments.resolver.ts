@@ -1,7 +1,8 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CommentsService } from './comments.service';
 import { UseGuards } from '@nestjs/common';
-import { Comment, GqlAuthGuard, UserFromGql } from '@app/shared';
+import { GqlAuthGuard, UserFromGql } from '@app/shared';
+import { Comment } from 'src/entities/comments.entity';
 
 @Resolver()
 export class CommentsResolver {

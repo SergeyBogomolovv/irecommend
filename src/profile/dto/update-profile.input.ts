@@ -1,5 +1,5 @@
-import { Profile } from '@app/shared';
 import { InputType, Field } from '@nestjs/graphql';
+import { Profile } from 'src/entities/profile.entity';
 
 @InputType()
 export class UpdateProfileDto implements Partial<Profile> {

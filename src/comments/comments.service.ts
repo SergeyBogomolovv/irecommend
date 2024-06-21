@@ -1,4 +1,3 @@
-import { Comment } from '@app/shared';
 import {
   ForbiddenException,
   Injectable,
@@ -6,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Comment } from 'src/entities/comments.entity';
 import { RecommendationsService } from 'src/recommendations/recommendations.service';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';

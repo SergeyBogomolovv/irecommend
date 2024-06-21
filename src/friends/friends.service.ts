@@ -7,7 +7,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
-import { FriendRequest, MessageResponse } from '@app/shared';
+import { MessageResponse } from '@app/shared';
+import { FriendRequest } from 'src/entities/friend-request.entity';
 
 @Injectable()
 export class FriendsService {

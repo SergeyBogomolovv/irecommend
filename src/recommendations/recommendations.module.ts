@@ -4,7 +4,9 @@ import { RecommendationsResolver } from './recommendations.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from 'src/users/users.module';
 import { S3Module } from 'src/s3/s3.module';
-import { Image, SharedModule, Recommendation } from '@app/shared';
+import { SharedModule } from '@app/shared';
+import { Image } from 'src/entities/image.entity';
+import { Recommendation } from 'src/entities/recommendation.entity';
 
 @Module({
   imports: [

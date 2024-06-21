@@ -1,6 +1,6 @@
-import { Contacts } from '@app/shared';
 import { InputType, Field } from '@nestjs/graphql';
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { Contacts } from 'src/entities/contact.entity';
 
 @InputType()
 export class AddContactDto {

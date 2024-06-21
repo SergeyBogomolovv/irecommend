@@ -8,9 +8,9 @@ import {
   GqlAuthGuard,
   GqlRelations,
   MessageResponse,
-  User,
   UserFromGql,
 } from '@app/shared';
+import { User } from 'src/entities/user.entity';
 
 @Resolver()
 export class ProfileResolver {
