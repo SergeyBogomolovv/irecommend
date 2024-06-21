@@ -15,14 +15,10 @@ export class FavoritesService {
     const user = await this.usersService.findOneByIdOrFail(userId, [
       'favorites',
     ]);
-    const recommendation = await this.recommendationsService.findOneByIdOrFail(
-      id,
-      ['author'],
-    );
-    if (recommendation.author.id === user.id)
-      throw new ForbiddenException(
-        'Вы не можете добавлять в избранное свои рекомендации',
-      );
+
+    const recommendation =
+      await this.recommendationsService.findOneByIdOrFail(id);
+
     user.favorites.forEach(({ id }) => {
       if (id === recommendation.id)
         throw new ForbiddenException(
@@ -32,6 +28,7 @@ export class FavoritesService {
 
     user.favorites.push(recommendation);
     recommendation.favoritesCount++;
+
     this.logger.verbose(
       `User ${user.email} added ${recommendation.title} to favorites`,
     );
@@ -47,9 +44,11 @@ export class FavoritesService {
   async removeFromFavorites(id: string, userId: string) {
     const recommendation =
       await this.recommendationsService.findOneByIdOrFail(id);
+
     const user = await this.usersService.findOneByIdOrFail(userId, [
       'favorites',
     ]);
+
     user.favorites = user.favorites.filter(
       ({ id }) => id !== recommendation.id,
     );
