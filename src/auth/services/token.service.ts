@@ -49,7 +49,6 @@ export class TokenService {
   generateAccessToken(user: User) {
     const payload = new UserJwtPayload({
       id: user.id,
-      profileId: user.profileId,
     });
     return this.jwtService.sign({ ...payload });
   }

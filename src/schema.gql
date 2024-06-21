@@ -121,7 +121,7 @@ type Mutation {
   update_profile(payload: UpdateProfileDto!, image: Upload): User!
   add_contact(payload: AddContactDto!): MessageResponse!
   remove_contact(contactId: String!): MessageResponse!
-  delete_profile: MessageResponse!
+  delete_account: MessageResponse!
   send_friend_request(friendId: String!): FriendRequest!
   decline_friend_request(requestId: String!): MessageResponse!
   accept_friend_request(requestId: String!): MessageResponse!

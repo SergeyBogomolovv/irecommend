@@ -57,7 +57,7 @@ export class ProfileResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => MessageResponse, { name: 'delete_profile' })
+  @Mutation(() => MessageResponse, { name: 'delete_account' })
   deleteUser(@UserFromGql('id') id: string) {
     return this.profileService.delete(id);
   }
