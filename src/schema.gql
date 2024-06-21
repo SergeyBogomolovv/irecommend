@@ -122,7 +122,7 @@ type Mutation {
   add_contact(payload: AddContactDto!): MessageResponse!
   remove_contact(contactId: String!): MessageResponse!
   delete_profile: MessageResponse!
-  send_friend_request(friendId: String!): MessageResponse!
+  send_friend_request(friendId: String!): FriendRequest!
   decline_friend_request(requestId: String!): MessageResponse!
   accept_friend_request(requestId: String!): MessageResponse!
   delete_friend(friendId: String!): MessageResponse!

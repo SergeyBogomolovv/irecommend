@@ -1,14 +1,19 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { FriendsService } from './friends.service';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard, MessageResponse, UserFromGql } from '@app/shared';
+import {
+  FriendRequest,
+  GqlAuthGuard,
+  MessageResponse,
+  UserFromGql,
+} from '@app/shared';
 
 @Resolver()
 export class FriendsResolver {
   constructor(private readonly friendsService: FriendsService) {}
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => MessageResponse, { name: 'send_friend_request' })
+  @Mutation(() => FriendRequest, { name: 'send_friend_request' })
   updateProfile(
     @UserFromGql('id') id: string,
     @Args('friendId') friendId: string,
