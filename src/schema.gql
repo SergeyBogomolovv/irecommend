@@ -26,7 +26,7 @@ enum Contacts {
 type Profile {
   id: ID!
   name: String!
-  about: String!
+  about: String
   logo: String
   contacts: [Contact!]!
 }
