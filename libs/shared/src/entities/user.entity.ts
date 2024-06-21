@@ -45,6 +45,10 @@ export class User {
   @Field(() => Profile)
   profile: Profile;
 
+  @Column()
+  @Field()
+  profileId: string;
+
   @ManyToMany(() => User)
   @JoinTable()
   @Field(() => [User])

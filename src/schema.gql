@@ -80,6 +80,7 @@ type User {
   password: String
   verified: Boolean!
   profile: Profile!
+  profileId: String!
   friends: [User!]!
   sendedFriendRequests: [FriendRequest!]!
   receivedFriendRequests: [FriendRequest!]!

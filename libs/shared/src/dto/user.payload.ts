@@ -3,6 +3,5 @@ export class UserJwtPayload {
     Object.assign(this, payload);
   }
   readonly id: string;
-  readonly email: string;
-  readonly logo: string;
+  readonly profileId: string;
 }

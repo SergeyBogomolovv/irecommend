@@ -32,9 +32,7 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginInput, response: Response) {
-    const user = await this.usersService.findOneByEmailOrFail(dto.email, [
-      'profile',
-    ]);
+    const user = await this.usersService.findOneByEmailOrFail(dto.email);
 
     const isPasswordValid = await this.hashingService.compare(
       dto.password,
@@ -63,10 +61,12 @@ export class AuthService {
       throw new ConflictException('Пользователь с такой почтой уже существует');
     }
     const hashedPassword = await this.hashingService.hash(dto.password);
+    const profile = new Profile();
     const newUser = await this.usersService.create({
       email: dto.email,
       password: hashedPassword,
-      profile: { ...new Profile(), name: dto.name },
+      profile: { ...profile, name: dto.name },
+      profileId: profile.id,
     });
     const code = await this.otpService.generateVerifyAccountOtp(newUser.email);
     this.eventEmitter.emit(
@@ -90,7 +90,6 @@ export class AuthService {
     }
     const existingUser = await this.usersService.findOneByEmailOrFail(
       dto.email,
-      ['profile'],
     );
     existingUser.verified = true;
     await this.usersService.update(existingUser);
@@ -142,9 +141,7 @@ export class AuthService {
   async refresh(refreshToken: string) {
     const token = await this.tokenService.getRefreshToken(refreshToken);
     if (!token) throw new UnauthorizedException('Token expired');
-    const user = await this.usersService.findOneByIdOrFail(token.userId, [
-      'profile',
-    ]);
+    const user = await this.usersService.findOneByIdOrFail(token.userId);
     this.logger.verbose(`${user.email} refreshed access token`);
     const access_token = this.tokenService.generateAccessToken(user);
     return new AccessTokenResponse(access_token);
