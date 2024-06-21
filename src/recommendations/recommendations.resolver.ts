@@ -40,7 +40,7 @@ export class RecommendationsResolver {
     @Args('limit', { type: () => Int, nullable: true }) limit: number,
     @GqlRelations('last_recommendations') relations: string[],
   ) {
-    return this.recommendationsService.getLast(type, relations);
+    return this.recommendationsService.getLast(type, relations, page, limit);
   }
 
   @Query(() => Recommendation, { name: 'get_recommendation_by_id' })

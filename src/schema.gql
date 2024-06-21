@@ -104,7 +104,7 @@ type VerifyResponse {
 type Query {
   refresh: AccessTokenResponse!
   one_user(id: String!): User!
-  search_users(name: String!): [User!]!
+  search_users_by_name(name: String!, page: Int, limit: Int): [User!]!
   profile: User!
   search_recommendations(query: String!, page: Int, limit: Int): [Recommendation!]!
   last_recommendations(type: RecommendationType, page: Int, limit: Int): [Recommendation!]!

@@ -61,10 +61,12 @@ export class UsersService {
     return await this.usersRepository.save(user);
   }
 
-  async searchUsers(name: string, relations: string[]) {
+  async searchUsers(name: string, relations: string[], page = 1, limit = 100) {
     const list = await this.usersRepository.find({
       where: { verified: true },
       relations: [...relations, 'profile'],
+      skip: page * limit - limit,
+      take: limit,
     });
 
     const fuseOptions = {
