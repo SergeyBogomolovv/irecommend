@@ -106,8 +106,8 @@ type Query {
   one_user(id: String!): User!
   search_users(name: String!): [User!]!
   profile: User!
-  search_recommendations(query: String!): [Recommendation!]!
-  last_recommendations(type: RecommendationType): [Recommendation!]!
+  search_recommendations(query: String!, page: Int, limit: Int): [Recommendation!]!
+  last_recommendations(type: RecommendationType, page: Int, limit: Int): [Recommendation!]!
   get_recommendation_by_id(id: String!): Recommendation!
 }
 
