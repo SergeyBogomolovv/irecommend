@@ -1,4 +1,4 @@
-import { Comment, MessageResponse } from '@app/shared';
+import { Comment } from '@app/shared';
 import {
   ForbiddenException,
   Injectable,
@@ -32,23 +32,18 @@ export class CommentsService {
 
   async create(recommendationId: string, content: string, authorId: string) {
     const author = await this.usersService.findOneByIdOrFail(authorId);
-    const recommendation = await this.recommendationsService.findOneByIdOrFail(
-      recommendationId,
-      ['comments'],
-    );
+    const recommendation =
+      await this.recommendationsService.findOneByIdOrFail(recommendationId);
     const comment = this.commentsRepository.create({
       author,
       recommendation,
       recommendationId: recommendation.id,
       content,
     });
-    recommendation.comments.push(comment);
-    await this.recommendationsService.update(recommendation);
-    await this.commentsRepository.save(comment);
     this.logger.verbose(
       `User ${comment.author.email} added comment to ${recommendation.title}`,
     );
-    return new MessageResponse('Комментарий добавлен');
+    return await this.commentsRepository.save(comment);
   }
 
   async edit(id: string, content: string, authorId: string) {
@@ -57,22 +52,19 @@ export class CommentsService {
       throw new ForbiddenException(
         'Вы не можете редактировать чужой комментарий',
       );
-    comment.content = content;
-    await this.commentsRepository.save(comment);
     this.logger.verbose(
       `User ${comment.author.email} updated comment ${comment.content}`,
     );
-    return new MessageResponse('Комментарий успешно изменен');
+    return await this.commentsRepository.save({ ...comment, content });
   }
 
   async delete(id: string, authorId: string) {
     const comment = await this.findOneByIdOrFail(id, ['author']);
     if (comment.author.id !== authorId)
       throw new ForbiddenException('Вы не можете удалить чужой комментарий');
-    await this.commentsRepository.remove(comment);
     this.logger.verbose(
       `${comment.author.email} deleted comment ${comment.content}`,
     );
-    return new MessageResponse('Комментарий успешно удален');
+    return await this.commentsRepository.remove(comment);
   }
 }

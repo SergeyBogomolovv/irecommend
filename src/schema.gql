@@ -133,9 +133,9 @@ type Mutation {
   delete_recommendation(id: String!): MessageResponse!
   add_to_favorites(id: String!): MessageResponse!
   remove_from_favorites(id: String!): MessageResponse!
-  create_comment(content: String!, recommendationId: String!): MessageResponse!
-  edit_comment(content: String!, id: String!): MessageResponse!
-  delete_comment(id: String!): MessageResponse!
+  create_comment(content: String!, recommendationId: String!): Comment!
+  edit_comment(content: String!, id: String!): Comment!
+  delete_comment(id: String!): Comment!
 }
 
 input LoginInput {

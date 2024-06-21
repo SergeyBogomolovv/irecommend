@@ -1,14 +1,14 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CommentsService } from './comments.service';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard, MessageResponse, UserFromGql } from '@app/shared';
+import { Comment, GqlAuthGuard, UserFromGql } from '@app/shared';
 
 @Resolver()
 export class CommentsResolver {
   constructor(private readonly commentsService: CommentsService) {}
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => MessageResponse, { name: 'create_comment' })
+  @Mutation(() => Comment, { name: 'create_comment' })
   async createComment(
     @UserFromGql('id') authorId: string,
     @Args('content') content: string,
@@ -18,7 +18,7 @@ export class CommentsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => MessageResponse, { name: 'edit_comment' })
+  @Mutation(() => Comment, { name: 'edit_comment' })
   async editComment(
     @UserFromGql('id') authorId: string,
     @Args('content') content: string,
@@ -28,7 +28,7 @@ export class CommentsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => MessageResponse, { name: 'delete_comment' })
+  @Mutation(() => Comment, { name: 'delete_comment' })
   async deleteComment(
     @UserFromGql('id') authorId: string,
     @Args('id') commentId: string,
