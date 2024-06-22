@@ -8,9 +8,9 @@ import {
   GqlAuthGuard,
   GqlRelations,
   MessageResponse,
-  User,
   UserFromGql,
 } from '@app/shared';
+import { User } from 'src/entities/user.entity';
 
 @Resolver()
 export class ProfileResolver {
@@ -57,7 +57,7 @@ export class ProfileResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => MessageResponse, { name: 'delete_profile' })
+  @Mutation(() => MessageResponse, { name: 'delete_account' })
   deleteUser(@UserFromGql('id') id: string) {
     return this.profileService.delete(id);
   }

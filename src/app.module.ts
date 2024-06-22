@@ -16,15 +16,13 @@ import { FriendsModule } from './friends/friends.module';
 import { RecommendationsModule } from './recommendations/recommendations.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { CommentsModule } from './comments/comments.module';
-import {
-  Comment,
-  Contact,
-  FriendRequest,
-  Image,
-  Profile,
-  Recommendation,
-  User,
-} from '@app/shared';
+import { Comment } from './entities/comments.entity';
+import { Contact } from './entities/contact.entity';
+import { FriendRequest } from './entities/friend-request.entity';
+import { Image } from './entities/image.entity';
+import { Profile } from './entities/profile.entity';
+import { User } from './entities/user.entity';
+import { Recommendation } from './entities/recommendation.entity';
 
 @Module({
   imports: [

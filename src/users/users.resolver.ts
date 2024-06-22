@@ -1,7 +1,7 @@
-import { Resolver, Query, Args } from '@nestjs/graphql';
+import { Resolver, Query, Args, Int } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
-import { User } from '@app/shared/entities/user.entity';
+import { User } from 'src/entities/user.entity';
 import { GqlRelations } from '@app/shared/decorators/gql-relations.decorator';
 
 @UseInterceptors(ClassSerializerInterceptor)
@@ -17,9 +17,11 @@ export class UsersResolver {
     return this.usersService.findOneByEmailOrFail(id, relations);
   }
 
-  @Query(() => [User], { name: 'search_users' })
+  @Query(() => [User], { name: 'search_users_by_name' })
   findManyByName(
     @Args('name') name: string,
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+    @Args('limit', { type: () => Int, nullable: true }) limit: number,
     @GqlRelations('search_users') relations: string[],
   ) {
     return this.usersService.searchUsers(name, relations);

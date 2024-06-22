@@ -26,7 +26,7 @@ enum Contacts {
 type Profile {
   id: ID!
   name: String!
-  about: String!
+  about: String
   logo: String
   contacts: [Contact!]!
 }
@@ -48,6 +48,14 @@ scalar DateTime
 type Image {
   id: ID!
   url: String!
+}
+
+type Comment {
+  id: ID!
+  content: String!
+  recommendationId: String!
+  author: User!
+  created_at: DateTime!
 }
 
 type Recommendation {
@@ -88,14 +96,6 @@ type User {
   favorites: [Recommendation!]!
 }
 
-type Comment {
-  id: ID!
-  content: String!
-  recommendationId: String!
-  author: User!
-  created_at: DateTime!
-}
-
 type VerifyResponse {
   message: String!
   email: String!
@@ -104,10 +104,10 @@ type VerifyResponse {
 type Query {
   refresh: AccessTokenResponse!
   one_user(id: String!): User!
-  search_users(name: String!): [User!]!
+  search_users_by_name(name: String!, page: Int, limit: Int): [User!]!
   profile: User!
-  search_recommendations(query: String!): [Recommendation!]!
-  last_recommendations(type: RecommendationType): [Recommendation!]!
+  search_recommendations(query: String!, page: Int, limit: Int): [Recommendation!]!
+  last_recommendations(type: RecommendationType, page: Int, limit: Int): [Recommendation!]!
   get_recommendation_by_id(id: String!): Recommendation!
 }
 
@@ -121,8 +121,8 @@ type Mutation {
   update_profile(payload: UpdateProfileDto!, image: Upload): User!
   add_contact(payload: AddContactDto!): MessageResponse!
   remove_contact(contactId: String!): MessageResponse!
-  delete_profile: MessageResponse!
-  send_friend_request(friendId: String!): MessageResponse!
+  delete_account: MessageResponse!
+  send_friend_request(friendId: String!): FriendRequest!
   decline_friend_request(requestId: String!): MessageResponse!
   accept_friend_request(requestId: String!): MessageResponse!
   delete_friend(friendId: String!): MessageResponse!
@@ -133,9 +133,9 @@ type Mutation {
   delete_recommendation(id: String!): MessageResponse!
   add_to_favorites(id: String!): MessageResponse!
   remove_from_favorites(id: String!): MessageResponse!
-  create_comment(content: String!, recommendationId: String!): MessageResponse!
-  edit_comment(content: String!, id: String!): MessageResponse!
-  delete_comment(id: String!): MessageResponse!
+  create_comment(content: String!, recommendationId: String!): Comment!
+  edit_comment(content: String!, id: String!): Comment!
+  delete_comment(id: String!): Comment!
 }
 
 input LoginInput {

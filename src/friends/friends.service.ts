@@ -4,13 +4,11 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AddFriendDto } from './dto/add-friend.dto';
-import { DeleteFriendDto } from './dto/delete-friend.dto';
 import { UsersService } from 'src/users/users.service';
-import { FriendRequest, MessageResponse } from '@app/shared';
+import { MessageResponse } from '@app/shared';
+import { FriendRequest } from 'src/entities/friend-request.entity';
 
 @Injectable()
 export class FriendsService {
@@ -19,24 +17,23 @@ export class FriendsService {
     private readonly usersService: UsersService,
     @InjectRepository(FriendRequest)
     private readonly friendRequestsRepository: Repository<FriendRequest>,
-    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async sendFriendRequest(id: string, friendId: string) {
     if (id === friendId)
       throw new ConflictException('Нельзя добавить в друзья самого себя');
-    const user = await this.usersService.findOneByIdOrFail(id);
-    const friend = await this.usersService.findOneByIdOrFail(friendId);
-    await this.friendRequestsRepository.save(
-      this.friendRequestsRepository.create({
-        sender: user,
-        senderId: user.id,
-        recipient: friend,
-        recipientId: friend.id,
-      }),
-    );
+    const [user, friend] = await Promise.all([
+      this.usersService.findOneByIdOrFail(id),
+      this.usersService.findOneByIdOrFail(friendId),
+    ]);
+    const friendRequest = this.friendRequestsRepository.create({
+      sender: user,
+      senderId: user.id,
+      recipient: friend,
+      recipientId: friend.id,
+    });
     this.logger.verbose(`${user.email} sent friend request to ${friend.email}`);
-    return new MessageResponse(`Заявка в друзья отправлена`);
+    return await this.friendRequestsRepository.save(friendRequest);
   }
 
   async declineFriendRequest(id: string) {
@@ -46,20 +43,16 @@ export class FriendsService {
   }
 
   async deleteUserFromFriends(id: string, friendId: string) {
-    const user = await this.usersService.findOneByIdOrFail(id, [
-      'friends.friends',
-    ]);
+    const user = await this.usersService.findOneByIdOrFail(id, ['friends']);
     const friend = await this.usersService.findOneByIdOrFail(friendId, [
-      'friends.friends',
+      'friends',
     ]);
-    this.eventEmitter.emit(
-      'delete_friend',
-      new DeleteFriendDto({ user, friendId: friend.id }),
-    );
-    this.eventEmitter.emit(
-      'delete_friend',
-      new DeleteFriendDto({ user: friend, friendId: user.id }),
-    );
+    user.friends = user.friends.filter((friend) => friend.id !== friendId);
+    friend.friends = friend.friends.filter((friend) => friend.id !== user.id);
+    await Promise.all([
+      this.usersService.update(user),
+      this.usersService.update(friend),
+    ]);
     this.logger.verbose(`${user.email} deleted ${friend.email} from friends`);
     return new MessageResponse('Пользователь удален из друзей');
   }
@@ -73,32 +66,19 @@ export class FriendsService {
       throw new UnauthorizedException(
         'Заявку в друзья может принять только получатель',
       );
-    this.eventEmitter.emit(
-      'add_friend',
-      new AddFriendDto({ user: request.recipient, friend: request.sender }),
-    );
-    this.eventEmitter.emit(
-      'add_friend',
-      new AddFriendDto({ user: request.sender, friend: request.recipient }),
-    );
+
+    request.recipient.friends.push(request.sender);
+    request.sender.friends.push(request.recipient);
+
+    await Promise.all([
+      this.usersService.update(request.sender),
+      this.usersService.update(request.recipient),
+    ]);
+
     this.logger.verbose(
       `${request.recipient.email} accepted friend request from ${request.sender.email}`,
     );
     await this.friendRequestsRepository.delete(request.id);
     return new MessageResponse('Заявка в друзья принята');
-  }
-
-  @OnEvent('add_friend')
-  async addFriend(payload: AddFriendDto) {
-    payload.user.friends.push(payload.friend);
-    await this.usersService.update(payload.user);
-  }
-
-  @OnEvent('delete_friend')
-  async deleteFriend(payload: DeleteFriendDto) {
-    payload.user.friends = payload.user.friends.filter(
-      (friend) => friend.id !== payload.friendId,
-    );
-    await this.usersService.update(payload.user);
   }
 }

@@ -3,8 +3,9 @@ import { CommentsService } from './comments.service';
 import { CommentsResolver } from './comments.resolver';
 import { UsersModule } from 'src/users/users.module';
 import { RecommendationsModule } from 'src/recommendations/recommendations.module';
-import { Comment, SharedModule } from '@app/shared';
+import { SharedModule } from '@app/shared';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Comment } from 'src/entities/comments.entity';
 
 @Module({
   imports: [

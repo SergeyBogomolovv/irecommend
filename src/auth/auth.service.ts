@@ -17,8 +17,9 @@ import { TokenService } from './services/token.service';
 import { AccessTokenResponse } from '../../libs/shared/src/dto/access.response';
 import { PasswordResetInput } from './dto/password-reset.input';
 import { UsersService } from 'src/users/users.service';
-import { MessageResponse, Profile } from '@app/shared';
+import { MessageResponse } from '@app/shared';
 import { VerifyResponse } from '@app/shared/dto/verify.response';
+import { Profile } from 'src/entities/profile.entity';
 
 @Injectable()
 export class AuthService {

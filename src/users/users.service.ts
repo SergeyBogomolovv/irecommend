@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '@app/shared/entities/user.entity';
+import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { FuseResult } from 'fuse.js';
 import { MessageResponse } from '@app/shared/dto/message.response';
@@ -61,10 +61,12 @@ export class UsersService {
     return await this.usersRepository.save(user);
   }
 
-  async searchUsers(name: string, relations: string[]) {
+  async searchUsers(name: string, relations: string[], page = 1, limit = 100) {
     const list = await this.usersRepository.find({
       where: { verified: true },
       relations: [...relations, 'profile'],
+      skip: page * limit - limit,
+      take: limit,
     });
 
     const fuseOptions = {

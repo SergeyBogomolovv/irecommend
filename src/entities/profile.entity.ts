@@ -14,7 +14,7 @@ export class Profile {
   name: string;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   about?: string;
 
   @Column({ nullable: true })

@@ -12,12 +12,12 @@ import { FileUpload } from 'graphql-upload-ts';
 import { S3Service } from 'src/s3/s3.service';
 import { UpdateRecommendationInput } from './dto/update-recommendation.input';
 import { FuseResult } from 'fuse.js';
+import { MessageResponse } from '@app/shared';
+import { Image } from 'src/entities/image.entity';
 import {
-  Image,
-  MessageResponse,
   Recommendation,
   RecommendationType,
-} from '@app/shared';
+} from 'src/entities/recommendation.entity';
 const Fuse = require('fuse.js');
 
 @Injectable()
@@ -43,18 +43,27 @@ export class RecommendationsService {
     return recommendation;
   }
 
-  async getLast(type?: RecommendationType, relations?: string[]) {
+  async getLast(
+    type?: RecommendationType,
+    relations?: string[],
+    page = 1,
+    limit = 100,
+  ) {
     if (type) {
       return await this.recommendationRepository.find({
         where: { type },
         relations,
         order: { created_at: 'DESC' },
+        skip: page * limit - limit,
+        take: limit,
       });
     }
 
     return await this.recommendationRepository.find({
       relations,
       order: { created_at: 'DESC' },
+      skip: page * limit - limit,
+      take: limit,
     });
   }
 
@@ -105,7 +114,10 @@ export class RecommendationsService {
     this.logger.verbose(
       `Recommendation ${recommendation.title} updated by ${recommendation.author.email}`,
     );
-    return new MessageResponse('Рекомендация успешно обновлена');
+    return await this.recommendationRepository.save({
+      ...recommendation,
+      ...dto,
+    });
   }
 
   async addImages(
@@ -154,9 +166,16 @@ export class RecommendationsService {
     return new MessageResponse('Изображение удалено');
   }
 
-  async searchRecommendations(query: string, relations: string[]) {
+  async searchRecommendations(
+    query: string,
+    relations: string[],
+    page = 1,
+    limit = 100,
+  ) {
     const list = await this.recommendationRepository.find({
       relations,
+      skip: page * limit - limit,
+      take: limit,
     });
 
     const fuseOptions = {

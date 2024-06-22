@@ -7,7 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AddContactDto } from './dto/add-contact.input';
 import { UsersService } from 'src/users/users.service';
 import { FileUpload } from 'graphql-upload-ts';
-import { Contact, MessageResponse } from '@app/shared';
+import { MessageResponse } from '@app/shared';
+import { Contact } from 'src/entities/contact.entity';
 
 @Injectable()
 export class ProfileService {
@@ -36,7 +37,6 @@ export class ProfileService {
     ]);
     let newLogo = user.profile.logo;
     if (image) {
-      this.logger.verbose(`Updating profile logo for user ${id}`);
       newLogo = this.cloud.upload({
         file: image.createReadStream(),
         path: 'logos',

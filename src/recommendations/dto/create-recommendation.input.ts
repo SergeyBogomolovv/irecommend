@@ -1,4 +1,4 @@
-import { RecommendationType } from '@app/shared/entities/recommendation.entity';
+import { RecommendationType } from 'src/entities/recommendation.entity';
 import { Field, InputType } from '@nestjs/graphql';
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 

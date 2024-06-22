@@ -1,17 +1,15 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { RecommendationsService } from './recommendations.service';
 import { MessageResponse } from '@app/shared/dto/message.response';
 import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
 import { UseGuards } from '@nestjs/common';
 import { CreateRecommendationInput } from './dto/create-recommendation.input';
 import { UpdateRecommendationInput } from './dto/update-recommendation.input';
+import { GqlAuthGuard, GqlRelations, UserFromGql } from '@app/shared';
 import {
-  GqlAuthGuard,
-  GqlRelations,
   Recommendation,
   RecommendationType,
-  UserFromGql,
-} from '@app/shared';
+} from 'src/entities/recommendation.entity';
 
 @Resolver()
 export class RecommendationsResolver {
@@ -22,18 +20,27 @@ export class RecommendationsResolver {
   @Query(() => [Recommendation], { name: 'search_recommendations' })
   findManyByName(
     @Args('query') query: string,
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+    @Args('limit', { type: () => Int, nullable: true }) limit: number,
     @GqlRelations('search_recommendations') relations: string[],
   ) {
-    return this.recommendationsService.searchRecommendations(query, relations);
+    return this.recommendationsService.searchRecommendations(
+      query,
+      relations,
+      page,
+      limit,
+    );
   }
 
   @Query(() => [Recommendation], { name: 'last_recommendations' })
   getMany(
     @Args('type', { type: () => RecommendationType, nullable: true })
     type: RecommendationType,
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+    @Args('limit', { type: () => Int, nullable: true }) limit: number,
     @GqlRelations('last_recommendations') relations: string[],
   ) {
-    return this.recommendationsService.getLast(type, relations);
+    return this.recommendationsService.getLast(type, relations, page, limit);
   }
 
   @Query(() => Recommendation, { name: 'get_recommendation_by_id' })
