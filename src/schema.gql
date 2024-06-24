@@ -111,7 +111,7 @@ type Query {
   one_user(id: String!): User!
   search_users_by_name(name: String!, page: Int, limit: Int): [User!]!
   profile: User!
-  search_recommendations(query: String!, page: Int): [Recommendation!]!
+  search_recommendations(query: String!): [Recommendation!]!
   last_recommendations(type: RecommendationType, page: Int): PaginatedRecommendationResponse!
   get_recommendation_by_id(id: String!): Recommendation!
 }

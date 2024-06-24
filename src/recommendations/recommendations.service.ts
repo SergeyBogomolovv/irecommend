@@ -45,29 +45,21 @@ export class RecommendationsService {
   }
 
   async getLast(type?: RecommendationType, relations?: string[], page = 1) {
-    if (type) {
-      const [recommendations, count] =
-        await this.recommendationRepository.findAndCount({
+    const skip = page * RECOMMENDATIONS_LIMIT - RECOMMENDATIONS_LIMIT;
+    const [recommendations, count] = type
+      ? await this.recommendationRepository.findAndCount({
           where: { type },
           relations,
           order: { created_at: 'DESC' },
-          skip: page * RECOMMENDATIONS_LIMIT - RECOMMENDATIONS_LIMIT,
+          skip,
+          take: RECOMMENDATIONS_LIMIT,
+        })
+      : await this.recommendationRepository.findAndCount({
+          relations,
+          order: { created_at: 'DESC' },
+          skip,
           take: RECOMMENDATIONS_LIMIT,
         });
-
-      return new PaginatedRecommendationResponse({
-        recommendations,
-        pagesCount: Math.ceil(count / RECOMMENDATIONS_LIMIT),
-      });
-    }
-
-    const [recommendations, count] =
-      await this.recommendationRepository.findAndCount({
-        relations,
-        order: { created_at: 'DESC' },
-        skip: page * RECOMMENDATIONS_LIMIT - RECOMMENDATIONS_LIMIT,
-        take: RECOMMENDATIONS_LIMIT,
-      });
 
     return new PaginatedRecommendationResponse({
       recommendations,
@@ -176,11 +168,9 @@ export class RecommendationsService {
     return new MessageResponse('Изображение удалено');
   }
 
-  async searchRecommendations(query: string, relations: string[], page = 1) {
+  async searchRecommendations(query: string, relations: string[]) {
     const list = await this.recommendationRepository.find({
       relations,
-      skip: page * RECOMMENDATIONS_LIMIT - RECOMMENDATIONS_LIMIT,
-      take: RECOMMENDATIONS_LIMIT,
     });
 
     const fuseOptions = {

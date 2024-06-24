@@ -21,14 +21,9 @@ export class RecommendationsResolver {
   @Query(() => [Recommendation], { name: 'search_recommendations' })
   findManyByName(
     @Args('query') query: string,
-    @Args('page', { type: () => Int, nullable: true }) page: number,
     @GqlRelations('search_recommendations') relations: string[],
   ) {
-    return this.recommendationsService.searchRecommendations(
-      query,
-      relations,
-      page,
-    );
+    return this.recommendationsService.searchRecommendations(query, relations);
   }
 
   @Query(() => PaginatedRecommendationResponse, {
