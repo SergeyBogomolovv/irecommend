@@ -126,7 +126,7 @@ type Mutation {
   decline_friend_request(requestId: String!): MessageResponse!
   accept_friend_request(requestId: String!): MessageResponse!
   delete_friend(friendId: String!): MessageResponse!
-  create_recommendation(payload: CreateRecommendationInput!, images: [Upload!]!): MessageResponse!
+  create_recommendation(payload: CreateRecommendationInput!, images: [Upload!]): MessageResponse!
   update_recommendation(id: String!, payload: UpdateRecommendationInput!): MessageResponse!
   delete_image_from_recommendation(imageId: String!): MessageResponse!
   add_images_to_recommendation(id: String!, images: [Upload!]!): MessageResponse!

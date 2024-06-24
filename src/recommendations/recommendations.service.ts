@@ -70,7 +70,7 @@ export class RecommendationsService {
   async create(
     authorId: string,
     payload: CreateRecommendationInput,
-    files: Array<Promise<FileUpload>>,
+    files: null | Array<Promise<FileUpload>>,
   ) {
     const author = await this.usersService.findOneByIdOrFail(authorId);
     const recommendation = this.recommendationRepository.create({
@@ -78,18 +78,20 @@ export class RecommendationsService {
       author,
       images: [],
     });
-    files.forEach(async (file) => {
-      const { createReadStream } = await file;
-      const url = this.cloud.upload({
-        path: 'images',
-        file: createReadStream(),
+    if (files) {
+      files.forEach(async (file) => {
+        const { createReadStream } = await file;
+        const url = this.cloud.upload({
+          path: 'images',
+          file: createReadStream(),
+        });
+        const image = new Image();
+        image.recommendation = recommendation;
+        image.url = url;
+        await this.imagesRepository.save(image);
+        recommendation.images.push(image);
       });
-      const image = new Image();
-      image.recommendation = recommendation;
-      image.url = url;
-      await this.imagesRepository.save(image);
-      recommendation.images.push(image);
-    });
+    }
     await this.recommendationRepository.save(recommendation);
     this.logger.verbose(
       `Recommendation ${recommendation.title} created by ${author.email}`,

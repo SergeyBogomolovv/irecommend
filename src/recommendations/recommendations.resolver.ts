@@ -57,8 +57,8 @@ export class RecommendationsResolver {
     @UserFromGql('id') authorId: string,
     @Args('payload', { type: () => CreateRecommendationInput })
     payload: CreateRecommendationInput,
-    @Args('images', { type: () => [GraphQLUpload] })
-    images: Array<Promise<FileUpload>>,
+    @Args('images', { type: () => [GraphQLUpload], nullable: true })
+    images: Array<Promise<FileUpload>> | null,
   ) {
     return this.recommendationsService.create(authorId, payload, images);
   }
