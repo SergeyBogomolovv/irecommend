@@ -1,3 +1,4 @@
+import { MessageResponse } from '@app/shared';
 import {
   ForbiddenException,
   Injectable,
@@ -55,7 +56,8 @@ export class CommentsService {
     this.logger.verbose(
       `User ${comment.author.email} updated comment ${comment.content}`,
     );
-    return await this.commentsRepository.save({ ...comment, content });
+    await this.commentsRepository.save({ ...comment, content });
+    return new MessageResponse('Комментарий изменен');
   }
 
   async delete(id: string, authorId: string) {
@@ -65,6 +67,7 @@ export class CommentsService {
     this.logger.verbose(
       `${comment.author.email} deleted comment ${comment.content}`,
     );
-    return await this.commentsRepository.remove(comment);
+    await this.commentsRepository.remove(comment);
+    return new MessageResponse(`Комментарий удален`);
   }
 }
