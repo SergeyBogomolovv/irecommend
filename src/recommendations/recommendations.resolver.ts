@@ -10,6 +10,7 @@ import {
   Recommendation,
   RecommendationType,
 } from 'src/entities/recommendation.entity';
+import { PaginatedRecommendationResponse } from './dto/paginated-recommendation-response.input';
 
 @Resolver()
 export class RecommendationsResolver {
@@ -21,26 +22,25 @@ export class RecommendationsResolver {
   findManyByName(
     @Args('query') query: string,
     @Args('page', { type: () => Int, nullable: true }) page: number,
-    @Args('limit', { type: () => Int, nullable: true }) limit: number,
     @GqlRelations('search_recommendations') relations: string[],
   ) {
     return this.recommendationsService.searchRecommendations(
       query,
       relations,
       page,
-      limit,
     );
   }
 
-  @Query(() => [Recommendation], { name: 'last_recommendations' })
+  @Query(() => PaginatedRecommendationResponse, {
+    name: 'last_recommendations',
+  })
   getMany(
     @Args('type', { type: () => RecommendationType, nullable: true })
     type: RecommendationType,
     @Args('page', { type: () => Int, nullable: true }) page: number,
-    @Args('limit', { type: () => Int, nullable: true }) limit: number,
-    @GqlRelations('last_recommendations') relations: string[],
+    @GqlRelations('last_recommendations.recommendations') relations: string[],
   ) {
-    return this.recommendationsService.getLast(type, relations, page, limit);
+    return this.recommendationsService.getLast(type, relations, page);
   }
 
   @Query(() => Recommendation, { name: 'get_recommendation_by_id' })

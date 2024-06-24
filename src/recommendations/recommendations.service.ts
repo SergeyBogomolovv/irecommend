@@ -12,12 +12,13 @@ import { FileUpload } from 'graphql-upload-ts';
 import { S3Service } from 'src/s3/s3.service';
 import { UpdateRecommendationInput } from './dto/update-recommendation.input';
 import { FuseResult } from 'fuse.js';
-import { MessageResponse } from '@app/shared';
+import { MessageResponse, RECOMMENDATIONS_LIMIT } from '@app/shared';
 import { Image } from 'src/entities/image.entity';
 import {
   Recommendation,
   RecommendationType,
 } from 'src/entities/recommendation.entity';
+import { PaginatedRecommendationResponse } from './dto/paginated-recommendation-response.input';
 const Fuse = require('fuse.js');
 
 @Injectable()
@@ -43,27 +44,34 @@ export class RecommendationsService {
     return recommendation;
   }
 
-  async getLast(
-    type?: RecommendationType,
-    relations?: string[],
-    page = 1,
-    limit = 100,
-  ) {
+  async getLast(type?: RecommendationType, relations?: string[], page = 1) {
     if (type) {
-      return await this.recommendationRepository.find({
-        where: { type },
-        relations,
-        order: { created_at: 'DESC' },
-        skip: page * limit - limit,
-        take: limit,
+      const [recommendations, count] =
+        await this.recommendationRepository.findAndCount({
+          where: { type },
+          relations,
+          order: { created_at: 'DESC' },
+          skip: page * RECOMMENDATIONS_LIMIT - RECOMMENDATIONS_LIMIT,
+          take: RECOMMENDATIONS_LIMIT,
+        });
+
+      return new PaginatedRecommendationResponse({
+        recommendations,
+        pagesCount: Math.ceil(count / RECOMMENDATIONS_LIMIT),
       });
     }
 
-    return await this.recommendationRepository.find({
-      relations,
-      order: { created_at: 'DESC' },
-      skip: page * limit - limit,
-      take: limit,
+    const [recommendations, count] =
+      await this.recommendationRepository.findAndCount({
+        relations,
+        order: { created_at: 'DESC' },
+        skip: page * RECOMMENDATIONS_LIMIT - RECOMMENDATIONS_LIMIT,
+        take: RECOMMENDATIONS_LIMIT,
+      });
+
+    return new PaginatedRecommendationResponse({
+      recommendations,
+      pagesCount: Math.ceil(count / RECOMMENDATIONS_LIMIT),
     });
   }
 
@@ -168,16 +176,11 @@ export class RecommendationsService {
     return new MessageResponse('Изображение удалено');
   }
 
-  async searchRecommendations(
-    query: string,
-    relations: string[],
-    page = 1,
-    limit = 100,
-  ) {
+  async searchRecommendations(query: string, relations: string[], page = 1) {
     const list = await this.recommendationRepository.find({
       relations,
-      skip: page * limit - limit,
-      take: limit,
+      skip: page * RECOMMENDATIONS_LIMIT - RECOMMENDATIONS_LIMIT,
+      take: RECOMMENDATIONS_LIMIT,
     });
 
     const fuseOptions = {
