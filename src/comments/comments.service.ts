@@ -21,6 +21,19 @@ export class CommentsService {
     private readonly recommendationsService: RecommendationsService,
   ) {}
 
+  getByRecommendationId(
+    recommendationId: string,
+    count?: number,
+    relations?: string[],
+  ) {
+    return this.commentsRepository.find({
+      where: { recommendationId },
+      take: count,
+      relations,
+      order: { created_at: 'DESC' },
+    });
+  }
+
   async findOneByIdOrFail(id: string, relations?: string[]) {
     const comment = await this.commentsRepository.findOne({
       where: { id },
