@@ -32,7 +32,7 @@ export class ProfileResolver {
   @Mutation(() => User, { name: 'update_profile' })
   updateProfile(
     @UserFromGql('id') id: string,
-    @Args('payload', { type: () => UpdateProfileDto })
+    @Args('payload', { type: () => UpdateProfileDto, nullable: true })
     payload: UpdateProfileDto,
     @Args('image', { type: () => GraphQLUpload, nullable: true })
     image: FileUpload,
@@ -54,11 +54,5 @@ export class ProfileResolver {
   @Mutation(() => MessageResponse, { name: 'remove_contact' })
   removeContatFromProfile(@Args('contactId') id: string) {
     return this.profileService.removeContact(id);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => MessageResponse, { name: 'delete_account' })
-  deleteUser(@UserFromGql('id') id: string) {
-    return this.profileService.delete(id);
   }
 }

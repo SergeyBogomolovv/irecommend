@@ -67,8 +67,4 @@ export class ProfileService {
     this.logger.verbose(`Removing contact ${id}`);
     return new MessageResponse('Контакт удален из вашего профиля');
   }
-
-  async delete(id: string) {
-    return await this.usersService.delete(id);
-  }
 }
