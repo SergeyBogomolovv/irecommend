@@ -1,12 +1,31 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CommentsService } from './comments.service';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard, MessageResponse, UserFromGql } from '@app/shared';
+import {
+  GqlAuthGuard,
+  GqlRelations,
+  MessageResponse,
+  UserFromGql,
+} from '@app/shared';
 import { Comment } from 'src/entities/comments.entity';
+import { ManyCommentsResponse } from './dto/many-comments.response';
 
 @Resolver()
 export class CommentsResolver {
   constructor(private readonly commentsService: CommentsService) {}
+
+  @Query(() => ManyCommentsResponse, { name: 'get_comments' })
+  getCommentsByRecommendationId(
+    @Args('recommendationId') recommendationId: string,
+    @Args('count', { type: () => Int, nullable: true }) count: number,
+    @GqlRelations('get_comments.comments') relations: string[],
+  ) {
+    return this.commentsService.getByRecommendationId(
+      recommendationId,
+      count,
+      relations,
+    );
+  }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => Comment, { name: 'create_comment' })
