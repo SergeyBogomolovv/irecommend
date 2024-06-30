@@ -10,7 +10,7 @@ import {
   Recommendation,
   RecommendationType,
 } from 'src/entities/recommendation.entity';
-import { PaginatedRecommendationResponse } from './dto/paginated-recommendation-response.input';
+import { PaginatedRecommendationResponse } from './dto/paginated-recommendation-response.response';
 
 @Resolver()
 export class RecommendationsResolver {
