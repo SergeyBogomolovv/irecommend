@@ -32,7 +32,7 @@ export class ProfileResolver {
   @Mutation(() => User, { name: 'update_profile' })
   updateProfile(
     @UserFromGql('id') id: string,
-    @Args('payload', { type: () => UpdateProfileDto })
+    @Args('payload', { type: () => UpdateProfileDto, nullable: true })
     payload: UpdateProfileDto,
     @Args('image', { type: () => GraphQLUpload, nullable: true })
     image: FileUpload,

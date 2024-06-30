@@ -129,7 +129,7 @@ type Mutation {
   password_reset_request(email: String!): VerifyResponse!
   password_reset(passwordResetInput: PasswordResetInput!): MessageResponse!
   logout: MessageResponse!
-  update_profile(payload: UpdateProfileDto!, image: Upload): User!
+  update_profile(payload: UpdateProfileDto, image: Upload): User!
   add_contact(payload: AddContactDto!): MessageResponse!
   remove_contact(contactId: String!): MessageResponse!
   delete_account: MessageResponse!
