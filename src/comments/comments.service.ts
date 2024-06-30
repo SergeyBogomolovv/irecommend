@@ -10,6 +10,7 @@ import { Comment } from 'src/entities/comments.entity';
 import { RecommendationsService } from 'src/recommendations/recommendations.service';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
+import { ManyCommentsResponse } from './dto/many-comments.response';
 
 @Injectable()
 export class CommentsService {
@@ -21,17 +22,18 @@ export class CommentsService {
     private readonly recommendationsService: RecommendationsService,
   ) {}
 
-  getByRecommendationId(
+  async getByRecommendationId(
     recommendationId: string,
     count?: number,
     relations?: string[],
   ) {
-    return this.commentsRepository.find({
+    const [comments, totalCount] = await this.commentsRepository.findAndCount({
       where: { recommendationId },
       take: count,
       relations,
       order: { created_at: 'DESC' },
     });
+    return new ManyCommentsResponse({ comments, totalCount });
   }
 
   async findOneByIdOrFail(id: string, relations?: string[]) {

@@ -8,16 +8,17 @@ import {
   UserFromGql,
 } from '@app/shared';
 import { Comment } from 'src/entities/comments.entity';
+import { ManyCommentsResponse } from './dto/many-comments.response';
 
 @Resolver()
 export class CommentsResolver {
   constructor(private readonly commentsService: CommentsService) {}
 
-  @Query(() => [Comment], { name: 'get_comments' })
+  @Query(() => ManyCommentsResponse, { name: 'get_comments' })
   getCommentsByRecommendationId(
     @Args('recommendationId') recommendationId: string,
     @Args('count', { type: () => Int, nullable: true }) count: number,
-    @GqlRelations('get_comments') relations: string[],
+    @GqlRelations('get_comments.comments') relations: string[],
   ) {
     return this.commentsService.getByRecommendationId(
       recommendationId,

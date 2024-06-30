@@ -106,6 +106,11 @@ type PaginatedRecommendationResponse {
   pagesCount: Int!
 }
 
+type ManyCommentsResponse {
+  comments: [Comment!]!
+  totalCount: Int!
+}
+
 type Query {
   refresh: AccessTokenResponse!
   one_user(id: String!): User!
@@ -114,7 +119,7 @@ type Query {
   search_recommendations(query: String!): [Recommendation!]!
   last_recommendations(type: RecommendationType, page: Int): PaginatedRecommendationResponse!
   get_recommendation_by_id(id: String!): Recommendation!
-  get_comments(recommendationId: String!, count: Int): [Comment!]!
+  get_comments(recommendationId: String!, count: Int): ManyCommentsResponse!
 }
 
 type Mutation {
