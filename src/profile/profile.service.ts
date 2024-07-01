@@ -8,7 +8,7 @@ import { AddContactDto } from './dto/add-contact.input';
 import { UsersService } from 'src/users/users.service';
 import { FileUpload } from 'graphql-upload-ts';
 import { MessageResponse } from '@app/shared';
-import { Contact } from 'src/entities/contact.entity';
+import { Contact, Contacts, contactsUrl } from 'src/entities/contact.entity';
 
 @Injectable()
 export class ProfileService {
@@ -54,7 +54,19 @@ export class ProfileService {
     const user = await this.usersService.findOneByIdOrFail(id, [
       'profile.contacts',
     ]);
-    user.profile.contacts.push(this.contactsRepository.create({ ...payload }));
+
+    const contactUrl =
+      payload.type !== Contacts.DISCORD
+        ? contactsUrl[payload.type] + payload.nickname
+        : null;
+
+    user.profile.contacts.push(
+      this.contactsRepository.create({
+        ...payload,
+        url: contactUrl,
+        nickname: payload.nickname,
+      }),
+    );
     await this.usersService.update(user);
     this.logger.verbose(
       `contact ${payload.type} added to ${user.email} profile`,

@@ -12,7 +12,8 @@ type MessageResponse {
 
 type Contact {
   id: ID!
-  url: String!
+  url: String
+  nickname: String!
   type: Contacts!
 }
 
@@ -179,7 +180,7 @@ input UpdateProfileDto {
 scalar Upload
 
 input AddContactDto {
-  url: String!
+  nickname: String!
   type: Contacts!
 }
 

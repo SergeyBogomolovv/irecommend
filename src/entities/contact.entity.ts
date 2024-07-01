@@ -15,6 +15,12 @@ export enum Contacts {
   VK = 'VK',
 }
 
+export const contactsUrl = {
+  [Contacts.TELEGRAM]: 'https://t.me/',
+  [Contacts.INSTAGRAM]: 'https://www.instagram.com/',
+  [Contacts.VK]: 'https://vk.com/',
+};
+
 registerEnumType(Contacts, {
   name: 'Contacts',
 });
@@ -26,9 +32,13 @@ export class Contact {
   @Field(() => ID)
   id: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  url: string;
+
   @Column()
   @Field()
-  url: string;
+  nickname: string;
 
   @Column({ type: 'enum', enum: Contacts })
   @Field(() => Contacts)
