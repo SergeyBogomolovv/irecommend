@@ -63,6 +63,7 @@ type Recommendation {
   id: ID!
   title: String!
   description: String!
+  favoritedBy: [User!]!
   favoritesCount: Int!
   type: RecommendationType!
   link: String
@@ -119,6 +120,7 @@ type Query {
   profile: User!
   search_recommendations(query: String!): [Recommendation!]!
   last_recommendations(type: RecommendationType, page: Int): PaginatedRecommendationResponse!
+  favorites_recommendations(page: Int): PaginatedRecommendationResponse!
   get_recommendation_by_id(id: String!): Recommendation!
   get_comments(recommendationId: String!, count: Int): ManyCommentsResponse!
 }

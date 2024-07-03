@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -39,6 +40,10 @@ export class Recommendation {
   @Column()
   @Field()
   description: string;
+
+  @ManyToMany(() => User, (user) => user.favorites)
+  @Field(() => [User])
+  favoritedBy: User[];
 
   @Column('int', { default: 0 })
   @Field(() => Int)

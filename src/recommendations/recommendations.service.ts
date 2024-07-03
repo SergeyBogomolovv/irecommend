@@ -67,6 +67,22 @@ export class RecommendationsService {
     });
   }
 
+  async getFavorites(userId: string, relations?: string[], page = 1) {
+    const skip = page * RECOMMENDATIONS_LIMIT - RECOMMENDATIONS_LIMIT;
+    const [recommendations, count] =
+      await this.recommendationRepository.findAndCount({
+        where: { favoritedBy: { id: userId } },
+        relations,
+        order: { created_at: 'DESC' },
+        skip,
+        take: RECOMMENDATIONS_LIMIT,
+      });
+    return new PaginatedRecommendationResponse({
+      recommendations,
+      pagesCount: Math.ceil(count / RECOMMENDATIONS_LIMIT),
+    });
+  }
+
   async create(
     authorId: string,
     payload: CreateRecommendationInput,
@@ -186,14 +202,6 @@ export class RecommendationsService {
     return fuse
       .search(query)
       .map((result: FuseResult<Recommendation>) => result.item);
-  }
-
-  async update(recommendation: Partial<Recommendation>) {
-    this.logger.verbose(
-      `Updating recommendation with`,
-      JSON.stringify(recommendation),
-    );
-    return await this.recommendationRepository.save(recommendation);
   }
 
   async deleteRecommendation(id: string, authorId: string) {

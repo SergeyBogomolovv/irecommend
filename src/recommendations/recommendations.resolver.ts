@@ -38,6 +38,19 @@ export class RecommendationsResolver {
     return this.recommendationsService.getLast(type, relations, page);
   }
 
+  @UseGuards(GqlAuthGuard)
+  @Query(() => PaginatedRecommendationResponse, {
+    name: 'favorites_recommendations',
+  })
+  getFavorites(
+    @UserFromGql('id') userId: string,
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+    @GqlRelations('favorites_recommendations.recommendations')
+    relations: string[],
+  ) {
+    return this.recommendationsService.getFavorites(userId, relations, page);
+  }
+
   @Query(() => Recommendation, { name: 'get_recommendation_by_id' })
   findOneById(
     @Args('id') id: string,
