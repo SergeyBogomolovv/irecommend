@@ -7,7 +7,7 @@ export class AddContactDto {
   @IsString()
   @IsNotEmpty()
   @Field()
-  url: string;
+  nickname: string;
 
   @IsEnum(Contacts)
   @Field(() => Contacts)

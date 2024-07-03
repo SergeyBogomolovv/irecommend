@@ -70,7 +70,10 @@ export class User {
   @Field(() => [Recommendation])
   recommendations: Recommendation[];
 
-  @ManyToMany(() => Recommendation)
+  @ManyToMany(
+    () => Recommendation,
+    (recommendation) => recommendation.favoritedBy,
+  )
   @JoinTable()
   @Field(() => [Recommendation])
   favorites: Recommendation[];

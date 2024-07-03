@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -12,13 +13,13 @@ import { Image } from './image.entity';
 import { Comment } from './comments.entity';
 
 export enum RecommendationType {
-  MOVIE = 'movie',
-  MUSIC = 'music',
-  ANIME = 'anime',
-  BOOK = 'book',
-  HOBBY = 'hobby',
-  TODO = 'todo',
-  SERIES = 'series',
+  MOVIE = 'MOVIE',
+  MUSIC = 'MUSIC',
+  ANIME = 'ANIME',
+  BOOK = 'BOOK',
+  HOBBY = 'HOBBY',
+  TODO = 'TODO',
+  SERIES = 'SERIES',
 }
 
 registerEnumType(RecommendationType, {
@@ -39,6 +40,10 @@ export class Recommendation {
   @Column()
   @Field()
   description: string;
+
+  @ManyToMany(() => User, (user) => user.favorites)
+  @Field(() => [User])
+  favoritedBy: User[];
 
   @Column('int', { default: 0 })
   @Field(() => Int)

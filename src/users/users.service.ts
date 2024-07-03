@@ -51,13 +51,11 @@ export class UsersService {
   }
 
   async create(user: Partial<User>) {
-    this.logger.verbose(`Creating user with`, JSON.stringify(user));
-    return await this.usersRepository.save(this.usersRepository.create(user));
+    return this.usersRepository.save(this.usersRepository.create(user));
   }
 
   async update(user: Partial<User>) {
-    this.logger.verbose(`Updating user with`, JSON.stringify(user));
-    return await this.usersRepository.save(user);
+    return this.usersRepository.save(user);
   }
 
   async searchUsers(name: string, relations: string[], page = 1, limit = 100) {
