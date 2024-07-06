@@ -12,13 +12,11 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { S3Module } from './s3/s3.module';
 import { ProfileModule } from './profile/profile.module';
-import { FriendsModule } from './friends/friends.module';
 import { RecommendationsModule } from './recommendations/recommendations.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { CommentsModule } from './comments/comments.module';
 import { Comment } from './entities/comments.entity';
 import { Contact } from './entities/contact.entity';
-import { FriendRequest } from './entities/friend-request.entity';
 import { Image } from './entities/image.entity';
 import { Profile } from './entities/profile.entity';
 import { User } from './entities/user.entity';
@@ -80,15 +78,7 @@ import { Recommendation } from './entities/recommendation.entity';
         username: config.get('POSTGRES_USER'),
         password: config.get('POSTGRES_PASSWORD'),
         host: config.get('POSTGRES_HOST'),
-        entities: [
-          Comment,
-          Contact,
-          FriendRequest,
-          Image,
-          Profile,
-          User,
-          Recommendation,
-        ],
+        entities: [Comment, Contact, Image, Profile, User, Recommendation],
         synchronize: true,
       }),
     }),
@@ -102,7 +92,6 @@ import { Recommendation } from './entities/recommendation.entity';
     UsersModule,
     S3Module,
     ProfileModule,
-    FriendsModule,
     RecommendationsModule,
     FavoritesModule,
     CommentsModule,

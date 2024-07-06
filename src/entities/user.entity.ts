@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Profile } from './profile.entity';
-import { FriendRequest } from './friend-request.entity';
 import { Recommendation } from './recommendation.entity';
 import { Exclude, Expose } from 'class-transformer';
 
@@ -53,18 +52,6 @@ export class User {
   @JoinTable()
   @Field(() => [User])
   friends: User[];
-
-  @OneToMany(() => FriendRequest, (request) => request.sender, {
-    cascade: true,
-  })
-  @Field(() => [FriendRequest])
-  sendedFriendRequests: FriendRequest[];
-
-  @OneToMany(() => FriendRequest, (request) => request.recipient, {
-    cascade: true,
-  })
-  @Field(() => [FriendRequest])
-  receivedFriendRequests: FriendRequest[];
 
   @OneToMany(() => Recommendation, (recommendation) => recommendation.author)
   @Field(() => [Recommendation])
