@@ -20,7 +20,7 @@ export class ProfileResolver {
     groups: ['private'],
   })
   @UseGuards(GqlAuthGuard)
-  @Query(() => User, { name: 'profile' })
+  @Query(() => User, { name: 'profile', nullable: true })
   getSelf(
     @UserFromGql('id') id: string,
     @GqlRelations('profile') relations: string[],

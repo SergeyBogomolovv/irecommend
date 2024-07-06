@@ -117,7 +117,7 @@ type Query {
   refresh: AccessTokenResponse!
   one_user(id: String!): User!
   search_users_by_name(name: String!, page: Int, limit: Int): [User!]!
-  profile: User!
+  profile: User
   search_recommendations(query: String!): [Recommendation!]!
   last_recommendations(type: RecommendationType, page: Int): PaginatedRecommendationResponse!
   favorites_recommendations(page: Int): PaginatedRecommendationResponse!
