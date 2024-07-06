@@ -48,11 +48,6 @@ export class User {
   @Field()
   profileId: string;
 
-  @ManyToMany(() => User)
-  @JoinTable()
-  @Field(() => [User])
-  friends: User[];
-
   @OneToMany(() => Recommendation, (recommendation) => recommendation.author)
   @Field(() => [Recommendation])
   recommendations: Recommendation[];
