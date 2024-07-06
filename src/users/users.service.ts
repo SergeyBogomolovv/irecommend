@@ -18,7 +18,6 @@ export class UsersService {
       relations,
     });
     if (!user) throw new NotFoundException('Пользователь не найден');
-    this.logger.verbose(`User ${user.email} found by id`);
     return user;
   }
 
@@ -28,7 +27,6 @@ export class UsersService {
       relations,
     });
     if (!user) throw new NotFoundException('Пользователь не найден');
-    this.logger.verbose(`User ${user.email} found by email`);
     return user;
   }
 
@@ -37,7 +35,6 @@ export class UsersService {
       where: { id },
       relations,
     });
-    if (user) this.logger.verbose(`User ${user.email} found by id`);
     return user;
   }
 
@@ -46,7 +43,6 @@ export class UsersService {
       where: { email },
       relations,
     });
-    if (user) this.logger.verbose(`User ${user.email} found by email`);
     return user;
   }
 

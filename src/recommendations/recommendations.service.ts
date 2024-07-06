@@ -132,10 +132,11 @@ export class RecommendationsService {
     this.logger.verbose(
       `Recommendation ${recommendation.title} updated by ${recommendation.author.email}`,
     );
-    return await this.recommendationRepository.save({
+    await this.recommendationRepository.save({
       ...recommendation,
       ...dto,
     });
+    return new MessageResponse('Рекоммендация изменена');
   }
 
   async addImages(
