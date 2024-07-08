@@ -51,6 +51,21 @@ export class RecommendationsResolver {
     return this.recommendationsService.getFavorites(userId, relations, page);
   }
 
+  @UseGuards(GqlAuthGuard)
+  @Query(() => [Recommendation], {
+    name: 'users_recommedations',
+  })
+  getUsersRecommendations(
+    @UserFromGql('id') userId: string,
+    @GqlRelations('users_recommedations')
+    relations: string[],
+  ) {
+    return this.recommendationsService.getUsersRecommendations(
+      userId,
+      relations,
+    );
+  }
+
   @Query(() => Recommendation, { name: 'get_recommendation_by_id' })
   findOneById(
     @Args('id') id: string,

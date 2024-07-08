@@ -83,6 +83,14 @@ export class RecommendationsService {
     });
   }
 
+  async getUsersRecommendations(authorId: string, relations?: string[]) {
+    return this.recommendationRepository.find({
+      where: { authorId },
+      relations,
+      order: { created_at: 'DESC' },
+    });
+  }
+
   async create(
     authorId: string,
     payload: CreateRecommendationInput,
