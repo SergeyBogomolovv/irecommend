@@ -74,6 +74,7 @@ export class Recommendation {
   author: User;
 
   @Column()
+  @Field()
   authorId: string;
 
   @CreateDateColumn()

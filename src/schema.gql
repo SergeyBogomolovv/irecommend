@@ -61,6 +61,7 @@ type Recommendation {
   images: [Image!]!
   comments: [Comment!]!
   author: User!
+  authorId: String!
   created_at: DateTime!
 }
 
