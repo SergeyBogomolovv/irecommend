@@ -19,14 +19,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
 
-  app.use(
-    helmet({
-      contentSecurityPolicy: false,
-      crossOriginOpenerPolicy: false,
-      crossOriginEmbedderPolicy: false,
-      crossOriginResourcePolicy: false,
-    }),
-  );
+  app.use(helmet());
 
   app.use('/graphql', graphqlUploadExpress());
 
