@@ -73,6 +73,9 @@ export class Recommendation {
   @Field(() => User)
   author: User;
 
+  @Column()
+  authorId: string;
+
   @CreateDateColumn()
   @Field(() => Date)
   readonly created_at: Date;

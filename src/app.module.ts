@@ -44,10 +44,13 @@ import { Recommendation } from './entities/recommendation.entity';
         MAIL_HOST: Joi.string().required(),
         MAIL_USER: Joi.string().required(),
         MAIL_PASS: Joi.string().required(),
+        MAIL_PORT: Joi.number().integer().required(),
 
         YANDEX_ACCESS: Joi.string().required(),
         YANDEX_SECRET: Joi.string().required(),
         YANDEX_BUCKET: Joi.string().required(),
+        YANDEX_ENDPOINT: Joi.string().required(),
+        YANDEX_REGION: Joi.string().required(),
 
         CLIENT_URL: Joi.string().required(),
       }),

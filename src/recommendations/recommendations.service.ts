@@ -83,6 +83,14 @@ export class RecommendationsService {
     });
   }
 
+  async getUsersRecommendations(authorId: string, relations?: string[]) {
+    return this.recommendationRepository.find({
+      where: { authorId },
+      relations,
+      order: { created_at: 'DESC' },
+    });
+  }
+
   async create(
     authorId: string,
     payload: CreateRecommendationInput,
@@ -97,7 +105,7 @@ export class RecommendationsService {
     if (files) {
       files.forEach(async (file) => {
         const { createReadStream } = await file;
-        const url = this.cloud.upload({
+        const url = await this.cloud.upload({
           path: 'images',
           file: createReadStream(),
         });
@@ -154,7 +162,7 @@ export class RecommendationsService {
       );
     files.forEach(async (file) => {
       const { createReadStream } = await file;
-      const url = this.cloud.upload({
+      const url = await this.cloud.upload({
         path: 'images',
         file: createReadStream(),
       });
