@@ -105,7 +105,7 @@ export class RecommendationsService {
     if (files) {
       files.forEach(async (file) => {
         const { createReadStream } = await file;
-        const url = this.cloud.upload({
+        const url = await this.cloud.upload({
           path: 'images',
           file: createReadStream(),
         });
@@ -162,7 +162,7 @@ export class RecommendationsService {
       );
     files.forEach(async (file) => {
       const { createReadStream } = await file;
-      const url = this.cloud.upload({
+      const url = await this.cloud.upload({
         path: 'images',
         file: createReadStream(),
       });

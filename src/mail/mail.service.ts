@@ -1,23 +1,21 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as nodemailer from 'nodemailer';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
+import { Transporter, createTransport } from 'nodemailer';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { OtpMailDto } from './dto/otp-mail.dto';
 import { OnEvent } from '@nestjs/event-emitter';
+import mailConfig from './config/mail.config';
 
 @Injectable()
 export class MailService {
+  private transporter: Transporter<SMTPTransport.SentMessageInfo>;
   private readonly logger = new Logger(MailService.name);
-  constructor(private readonly config: ConfigService) {}
-  private readonly transporter = nodemailer.createTransport({
-    host: this.config.get('MAIL_HOST'),
-    secure: false,
-    port: 587,
-    from: this.config.get('MAIL_USER'),
-    auth: {
-      user: this.config.get('MAIL_USER'),
-      pass: this.config.get('MAIL_PASS'),
-    },
-  });
+  constructor(
+    @Inject(mailConfig.KEY)
+    mailConfiguration: ConfigType<typeof mailConfig>,
+  ) {
+    this.transporter = createTransport(mailConfiguration);
+  }
 
   @OnEvent('send_activation_email')
   sendActivationMail(dto: OtpMailDto) {

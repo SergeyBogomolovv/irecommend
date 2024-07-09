@@ -37,7 +37,7 @@ export class ProfileService {
     ]);
     let newLogo = user.profile.logo;
     if (image) {
-      newLogo = this.cloud.upload({
+      newLogo = await this.cloud.upload({
         file: image.createReadStream(),
         path: 'logos',
       });

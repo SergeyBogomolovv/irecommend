@@ -1,40 +1,44 @@
-import { Injectable, Logger } from '@nestjs/common';
-import {
-  DeleteObjectCommand,
-  PutObjectCommand,
-  S3Client,
-} from '@aws-sdk/client-s3';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { ConfigService, ConfigType } from '@nestjs/config';
 import { v4 as uuid } from 'uuid';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { UploadImageDto } from './dto/upload-image.dto';
-import { SendFileImageDto } from './dto/send-file.dto';
+import cloudConfig from './config/cloud.config';
+import { Upload } from '@aws-sdk/lib-storage';
 
 @Injectable()
 export class S3Service {
   private readonly logger = new Logger(S3Service.name);
-  private readonly s3Client = new S3Client({
-    region: 'ru-central1',
-    endpoint: 'https://storage.yandexcloud.net',
-    credentials: {
-      accessKeyId: this.config.get('YANDEX_ACCESS'),
-      secretAccessKey: this.config.get('YANDEX_SECRET'),
-    },
-  });
+  private s3Client: S3Client;
   constructor(
+    @Inject(cloudConfig.KEY)
+    cloudConfiguration: ConfigType<typeof cloudConfig>,
     private readonly config: ConfigService,
     private readonly eventEmitter: EventEmitter2,
-  ) {}
+  ) {
+    this.s3Client = new S3Client(cloudConfiguration);
+  }
 
-  upload(dto: UploadImageDto) {
+  async upload(dto: UploadImageDto) {
     const fileName = uuid() + '.jpg';
-    this.logger.verbose(
-      `Uploading image to ${this.config.get('YANDEX_BUCKET')}`,
-    );
-    this.eventEmitter.emit(
-      'upload_image',
-      new SendFileImageDto({ ...dto, fileName }),
-    );
+    const parallelUploads3 = new Upload({
+      client: this.s3Client,
+      params: {
+        Bucket: this.config.get('YANDEX_BUCKET'),
+        Body: dto.file,
+        Key: `${dto.path}/${fileName}`,
+      },
+    });
+
+    parallelUploads3.on('httpUploadProgress', () => {
+      this.logger.debug(
+        `Uploading image to ${this.config.get('YANDEX_BUCKET')}`,
+      );
+    });
+
+    await parallelUploads3.done();
+
     return `https://${this.config.get('YANDEX_BUCKET')}.storage.yandexcloud.net/${dto.path}/${fileName}`;
   }
 
@@ -52,32 +56,13 @@ export class S3Service {
           Key: path,
         }),
       );
-      this.logger.verbose(
+      this.logger.debug(
         `Deleted ${path} from ${this.config.get('YANDEX_BUCKET')}`,
       );
     } catch (error) {
       this.logger.error(
         `Failed to delete ${path} from ${this.config.get('YANDEX_BUCKET')}`,
       );
-    }
-  }
-
-  @OnEvent('upload_image')
-  async sendFile(dto: SendFileImageDto) {
-    try {
-      await this.s3Client.send(
-        new PutObjectCommand({
-          Bucket: this.config.get('YANDEX_BUCKET'),
-          Body: dto.file,
-          Key: `${dto.path}/${dto.fileName}`,
-        }),
-      );
-      this.logger.verbose(
-        `Uploaded image to ${this.config.get('YANDEX_BUCKET')} with name - ${dto.fileName}`,
-      );
-    } catch (error) {
-      this.logger.error(`Failed to upload ${dto.fileName}`);
-      throw error;
     }
   }
 }
