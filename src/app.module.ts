@@ -16,13 +16,7 @@ import { RecommendationsModule } from './recommendations/recommendations.module'
 import { FavoritesModule } from './favorites/favorites.module';
 import { CommentsModule } from './comments/comments.module';
 import { TerminusModule } from '@nestjs/terminus';
-import { Comment } from './entities/comments.entity';
-import { Contact } from './entities/contact.entity';
-import { Image } from './entities/image.entity';
-import { Profile } from './entities/profile.entity';
-import { Recommendation } from './entities/recommendation.entity';
-import { User } from './entities/user.entity';
-import { DataSource, DataSourceOptions } from 'typeorm';
+import { dataSourceOptions } from './data-source';
 
 @Module({
   imports: [
@@ -77,24 +71,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
       },
       isGlobal: true,
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('POSTGRES_HOST'),
-        port: +configService.get('POSTGRES_PORT'),
-        username: configService.get('POSTGRES_USER'),
-        password: configService.get('POSTGRES_PASSWORD'),
-        database: configService.get('POSTGRES_DB'),
-        entities: [Comment, Contact, Image, Profile, Recommendation, User],
-        synchronize: true,
-        dataSourceFactory: async (options: DataSourceOptions) => {
-          const dataSource = await new DataSource(options).initialize();
-          return dataSource;
-        },
-      }),
-    }),
+    TypeOrmModule.forRoot(dataSourceOptions),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/schema.gql',
