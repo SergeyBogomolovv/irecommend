@@ -17,6 +17,12 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { CommentsModule } from './comments/comments.module';
 import { TerminusModule } from '@nestjs/terminus';
 import AppDataSource from './data-source';
+import { User } from './entities/user.entity';
+import { Comment } from './entities/comments.entity';
+import { Contact } from './entities/contact.entity';
+import { Image } from './entities/image.entity';
+import { Profile } from './entities/profile.entity';
+import { Recommendation } from './entities/recommendation.entity';
 
 @Module({
   imports: [
@@ -71,7 +77,10 @@ import AppDataSource from './data-source';
       },
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot(AppDataSource.options),
+    TypeOrmModule.forRoot({
+      ...AppDataSource.options,
+      entities: [User, Comment, Contact, Image, Profile, Recommendation],
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/schema.gql',
