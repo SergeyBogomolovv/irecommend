@@ -12,11 +12,27 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { GqlExceptionFilter } from '@app/shared';
+import { DataSource } from 'typeorm';
 
 async function bootstrap() {
   const logger = new Logger('bootstrap');
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
+  const dataSource = app.get<DataSource>(DataSource);
+
+  ['SIGINT', 'SIGTERM'].forEach((signal) => {
+    process.on(signal, async () => {
+      try {
+        await dataSource.destroy();
+        logger.debug('Database connection closed.');
+      } catch (err) {
+        logger.error('Error while closing database connection', err);
+      }
+      await app.close();
+      logger.debug('Nest application closed.');
+      process.exit(0);
+    });
+  });
 
   app.use(helmet());
 

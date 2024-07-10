@@ -15,15 +15,21 @@ import { ProfileModule } from './profile/profile.module';
 import { RecommendationsModule } from './recommendations/recommendations.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { CommentsModule } from './comments/comments.module';
+import { TerminusModule } from '@nestjs/terminus';
 import { Comment } from './entities/comments.entity';
 import { Contact } from './entities/contact.entity';
 import { Image } from './entities/image.entity';
 import { Profile } from './entities/profile.entity';
-import { User } from './entities/user.entity';
 import { Recommendation } from './entities/recommendation.entity';
+import { User } from './entities/user.entity';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
 @Module({
   imports: [
+    TerminusModule.forRoot({
+      gracefulShutdownTimeoutMs: 1000,
+    }),
+
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -74,15 +80,19 @@ import { Recommendation } from './entities/recommendation.entity';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        port: config.get('POSTGRES_PORT'),
-        database: config.get('POSTGRES_DB'),
-        username: config.get('POSTGRES_USER'),
-        password: config.get('POSTGRES_PASSWORD'),
-        host: config.get('POSTGRES_HOST'),
-        entities: [Comment, Contact, Image, Profile, User, Recommendation],
+        host: configService.get('POSTGRES_HOST'),
+        port: +configService.get('POSTGRES_PORT'),
+        username: configService.get('POSTGRES_USER'),
+        password: configService.get('POSTGRES_PASSWORD'),
+        database: configService.get('POSTGRES_DB'),
+        entities: [Comment, Contact, Image, Profile, Recommendation, User],
         synchronize: true,
+        dataSourceFactory: async (options: DataSourceOptions) => {
+          const dataSource = await new DataSource(options).initialize();
+          return dataSource;
+        },
       }),
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
