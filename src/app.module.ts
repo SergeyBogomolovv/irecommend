@@ -16,7 +16,7 @@ import { RecommendationsModule } from './recommendations/recommendations.module'
 import { FavoritesModule } from './favorites/favorites.module';
 import { CommentsModule } from './comments/comments.module';
 import { TerminusModule } from '@nestjs/terminus';
-import { dataSourceOptions } from './data-source';
+import AppDataSource from './data-source';
 
 @Module({
   imports: [
@@ -71,7 +71,7 @@ import { dataSourceOptions } from './data-source';
       },
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot(dataSourceOptions),
+    TypeOrmModule.forRoot(AppDataSource.options),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/schema.gql',

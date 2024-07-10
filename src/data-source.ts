@@ -1,6 +1,6 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { cwd } from 'process';
 import * as dotenv from 'dotenv';
+import { join } from 'path';
 
 dotenv.config();
 
@@ -11,9 +11,8 @@ export const dataSourceOptions: DataSourceOptions = {
   username: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
-  entities: [cwd() + 'src/entities/*.entity{.ts,.js}'],
-  migrations: [cwd() + 'src/migrations/*{.ts,.js}'],
-  migrationsTableName: 'migrations',
+  entities: [join(__dirname, '/entities/**/*.{ts,js}')],
+  migrations: [join(__dirname, '/migrations/**/*.{ts,js}')],
   synchronize: false,
   logging: false,
 };
