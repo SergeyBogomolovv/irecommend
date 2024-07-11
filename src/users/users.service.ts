@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -7,7 +7,6 @@ const Fuse = require('fuse.js');
 
 @Injectable()
 export class UsersService {
-  private readonly logger = new Logger(UsersService.name);
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
@@ -71,7 +70,6 @@ export class UsersService {
     };
 
     const fuse = new Fuse(list, fuseOptions);
-    this.logger.verbose(`Searching for users by name:${name}`);
     return fuse.search(name).map((result: FuseResult<User>) => result.item);
   }
 }

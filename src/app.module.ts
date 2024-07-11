@@ -15,15 +15,21 @@ import { ProfileModule } from './profile/profile.module';
 import { RecommendationsModule } from './recommendations/recommendations.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { CommentsModule } from './comments/comments.module';
+import { TerminusModule } from '@nestjs/terminus';
+import AppDataSource from './data-source';
+import { User } from './entities/user.entity';
 import { Comment } from './entities/comments.entity';
 import { Contact } from './entities/contact.entity';
 import { Image } from './entities/image.entity';
 import { Profile } from './entities/profile.entity';
-import { User } from './entities/user.entity';
 import { Recommendation } from './entities/recommendation.entity';
 
 @Module({
   imports: [
+    TerminusModule.forRoot({
+      gracefulShutdownTimeoutMs: 1000,
+    }),
+
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -71,19 +77,9 @@ import { Recommendation } from './entities/recommendation.entity';
       },
       isGlobal: true,
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        port: config.get('POSTGRES_PORT'),
-        database: config.get('POSTGRES_DB'),
-        username: config.get('POSTGRES_USER'),
-        password: config.get('POSTGRES_PASSWORD'),
-        host: config.get('POSTGRES_HOST'),
-        entities: [Comment, Contact, Image, Profile, User, Recommendation],
-        synchronize: true,
-      }),
+    TypeOrmModule.forRoot({
+      ...AppDataSource.options,
+      entities: [User, Comment, Contact, Image, Profile, Recommendation],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
