@@ -27,7 +27,7 @@ export class FavoritesService {
       'favoritesCount',
       1,
     );
-    this.logger.verbose(
+    this.logger.debug(
       `User ${user.email} added ${recommendation.title} to favorites`,
     );
     await this.usersService.update(user);
@@ -47,7 +47,7 @@ export class FavoritesService {
       ({ id }) => id !== recommendation.id,
     );
     await this.recommendationsRepository.decrement({ id }, 'favoritesCount', 1);
-    this.logger.verbose(
+    this.logger.debug(
       `User ${user.email} deleted ${recommendation.title} from favorites`,
     );
     await this.usersService.update(user);

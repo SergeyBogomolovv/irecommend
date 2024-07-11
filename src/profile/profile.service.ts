@@ -46,7 +46,7 @@ export class ProfileService {
       }
     }
     user.profile = { ...user.profile, ...payload, logo: newLogo };
-    this.logger.verbose(`Updating profile for user ${user.email}`);
+    this.logger.debug(`Updating profile for user ${user.email}`);
     return await this.usersService.update(user);
   }
 
@@ -68,15 +68,13 @@ export class ProfileService {
       }),
     );
     await this.usersService.update(user);
-    this.logger.verbose(
-      `contact ${payload.type} added to ${user.email} profile`,
-    );
+    this.logger.debug(`contact ${payload.type} added to ${user.email} profile`);
     return new MessageResponse('Контакт добавлен в ваш профиль');
   }
 
   async removeContact(id: string) {
     await this.contactsRepository.delete(id);
-    this.logger.verbose(`Removing contact ${id}`);
+    this.logger.debug(`Removing contact ${id}`);
     return new MessageResponse('Контакт удален из вашего профиля');
   }
 }

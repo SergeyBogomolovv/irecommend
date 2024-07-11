@@ -40,7 +40,6 @@ export class RecommendationsService {
     });
     if (!recommendation)
       throw new NotFoundException('Recommendation not found');
-    this.logger.verbose(`Recommendation ${recommendation.title} found by id`);
     return recommendation;
   }
 
@@ -117,7 +116,7 @@ export class RecommendationsService {
       });
     }
     await this.recommendationRepository.save(recommendation);
-    this.logger.verbose(
+    this.logger.debug(
       `Recommendation ${recommendation.title} created by ${author.email}`,
     );
     return new MessageResponse('Рекомендация создана');
@@ -137,7 +136,7 @@ export class RecommendationsService {
       ...recommendation,
       ...dto,
     });
-    this.logger.verbose(
+    this.logger.debug(
       `Recommendation ${recommendation.title} updated by ${recommendation.author.email}`,
     );
     await this.recommendationRepository.save({
@@ -169,9 +168,7 @@ export class RecommendationsService {
       const image = this.imagesRepository.create({ url, recommendation });
       recommendation.images.push(await this.imagesRepository.save(image));
     });
-    this.logger.verbose(
-      `Added images to recommendation ${recommendation.title}`,
-    );
+    this.logger.debug(`Added images to recommendation ${recommendation.title}`);
     await this.recommendationRepository.save(recommendation);
     return new MessageResponse('Рекомендация изменена');
   }
@@ -186,7 +183,7 @@ export class RecommendationsService {
         'У вас нет доступа чтобы изменять чужие рекомендации',
       );
     this.cloud.delete(image.url);
-    this.logger.verbose(
+    this.logger.debug(
       `Deleted image from recommendation ${image.recommendation.title}`,
     );
     await this.imagesRepository.delete(image.id);
@@ -207,7 +204,6 @@ export class RecommendationsService {
     };
 
     const fuse = new Fuse(list, fuseOptions);
-    this.logger.verbose(`Searching for recommendations by ${query}`);
     return fuse
       .search(query)
       .map((result: FuseResult<Recommendation>) => result.item);
@@ -225,7 +221,7 @@ export class RecommendationsService {
     recommendation.images.forEach((image) => {
       this.cloud.delete(image.url);
     });
-    this.logger.verbose(
+    this.logger.debug(
       `${recommendation.author.email} deleted recommendation ${recommendation.title}`,
     );
     await this.recommendationRepository.remove(recommendation);

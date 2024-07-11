@@ -19,7 +19,7 @@ export class MailService {
 
   @OnEvent('send_activation_email')
   sendActivationMail(dto: OtpMailDto) {
-    this.logger.verbose(`Sending verification email to ${dto.to}`);
+    this.logger.debug(`Sending verification email to ${dto.to}`);
     this.transporter.sendMail({
       to: dto.to,
       subject: 'Подтвердите вашу почту',
@@ -105,7 +105,7 @@ export class MailService {
   }
   @OnEvent('send_password_reset_email')
   sendPasswordResetMail(dto: OtpMailDto) {
-    this.logger.verbose(`Sending reset password email to ${dto.to}`);
+    this.logger.debug(`Sending reset password email to ${dto.to}`);
     this.transporter.sendMail({
       to: dto.to,
       subject: 'Сброс пароля',

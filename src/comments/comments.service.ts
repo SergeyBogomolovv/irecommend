@@ -42,7 +42,6 @@ export class CommentsService {
       relations,
     });
     if (!comment) throw new NotFoundException('Comment not found');
-    this.logger.verbose(`Found comment ${comment.content} by id`);
     return comment;
   }
 
@@ -56,7 +55,7 @@ export class CommentsService {
       recommendationId: recommendation.id,
       content,
     });
-    this.logger.verbose(
+    this.logger.debug(
       `User ${comment.author.email} added comment to ${recommendation.title}`,
     );
     return await this.commentsRepository.save(comment);
@@ -68,7 +67,7 @@ export class CommentsService {
       throw new ForbiddenException(
         'Вы не можете редактировать чужой комментарий',
       );
-    this.logger.verbose(
+    this.logger.debug(
       `User ${comment.author.email} updated comment ${comment.content}`,
     );
     await this.commentsRepository.save({ ...comment, content });
@@ -79,7 +78,7 @@ export class CommentsService {
     const comment = await this.findOneByIdOrFail(id, ['author']);
     if (comment.author.id !== authorId)
       throw new ForbiddenException('Вы не можете удалить чужой комментарий');
-    this.logger.verbose(
+    this.logger.debug(
       `${comment.author.email} deleted comment ${comment.content}`,
     );
     await this.commentsRepository.remove(comment);
