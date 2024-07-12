@@ -17,6 +17,7 @@ services:
 
   postgres:
     image: postgres
+    hostname: postgres
     restart: always
     env_file:
       - .env
@@ -27,6 +28,7 @@ services:
 
   redis:
     image: redis
+    hostname: redis
     restart: always
     env_file:
       - .env
