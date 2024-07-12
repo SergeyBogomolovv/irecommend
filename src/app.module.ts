@@ -40,7 +40,7 @@ import { JwtModule } from '@nestjs/jwt';
 
         POSTGRES_URL: Joi.string().required(),
 
-        REDIS_URI: Joi.string().required(),
+        REDIS_URL: Joi.string().required(),
 
         MAIL_TRANSPORT: Joi.string().required(),
         MAIL_HOST: Joi.string().required(),
@@ -73,7 +73,7 @@ import { JwtModule } from '@nestjs/jwt';
       useFactory: async (config: ConfigService) => {
         const store = await redisStore({
           ttl: 0,
-          url: config.get('REDIS_URI'),
+          url: config.get('REDIS_URL'),
         });
         return { store };
       },
