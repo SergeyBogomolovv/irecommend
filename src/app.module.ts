@@ -85,7 +85,7 @@ import { JwtModule } from '@nestjs/jwt';
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: 'src/schema.gql',
+      autoSchemaFile: false,
       context: ({ req, res }) => ({ req, res }),
     }),
     MailModule,
