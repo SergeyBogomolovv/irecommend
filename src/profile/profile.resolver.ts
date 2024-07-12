@@ -9,7 +9,7 @@ import {
   GqlRelations,
   MessageResponse,
   UserFromGql,
-} from '@app/shared';
+} from 'src/common';
 import { User } from 'src/entities/user.entity';
 
 @Resolver()

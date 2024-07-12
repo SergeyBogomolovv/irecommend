@@ -1,11 +1,11 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { RecommendationsService } from './recommendations.service';
-import { MessageResponse } from '@app/shared/dto/message.response';
+import { MessageResponse } from 'src/common';
 import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
 import { UseGuards } from '@nestjs/common';
 import { CreateRecommendationInput } from './dto/create-recommendation.input';
 import { UpdateRecommendationInput } from './dto/update-recommendation.input';
-import { GqlAuthGuard, GqlRelations, UserFromGql } from '@app/shared';
+import { GqlAuthGuard, GqlRelations, UserFromGql } from 'src/common';
 import {
   Recommendation,
   RecommendationType,

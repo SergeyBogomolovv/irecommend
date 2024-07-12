@@ -1,7 +1,7 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { FavoritesService } from './favorites.service';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard, MessageResponse, UserFromGql } from '@app/shared';
+import { GqlAuthGuard, MessageResponse, UserFromGql } from 'src/common';
 
 @Resolver()
 export class FavoritesResolver {

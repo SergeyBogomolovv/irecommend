@@ -14,11 +14,11 @@ import { HashingService } from './services/hashing.service';
 import { OtpMailDto } from 'src/mail/dto/otp-mail.dto';
 import { OtpService } from './services/otp.service';
 import { TokenService } from './services/token.service';
-import { AccessTokenResponse } from '../../libs/shared/src/dto/access.response';
+import { AccessTokenResponse } from 'src/common';
 import { PasswordResetInput } from './dto/password-reset.input';
 import { UsersService } from 'src/users/users.service';
-import { MessageResponse } from '@app/shared';
-import { VerifyResponse } from '@app/shared/dto/verify.response';
+import { MessageResponse } from 'src/common';
+import { VerifyResponse } from 'src/common';
 import { Profile } from 'src/entities/profile.entity';
 
 @Injectable()

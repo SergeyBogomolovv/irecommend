@@ -1,4 +1,4 @@
-import { MessageResponse } from '@app/shared';
+import { MessageResponse } from 'src/common';
 import {
   ForbiddenException,
   Injectable,

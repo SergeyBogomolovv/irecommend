@@ -23,6 +23,7 @@ import { Contact } from './entities/contact.entity';
 import { Image } from './entities/image.entity';
 import { Profile } from './entities/profile.entity';
 import { Recommendation } from './entities/recommendation.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -59,6 +60,15 @@ import { Recommendation } from './entities/recommendation.entity';
         YANDEX_REGION: Joi.string().required(),
 
         CLIENT_URL: Joi.string().required(),
+      }),
+    }),
+    JwtModule.registerAsync({
+      global: true,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret: config.get('JWT_SECRET'),
+        signOptions: { expiresIn: '1h' },
       }),
     }),
     EventEmitterModule.forRoot({ global: true }),

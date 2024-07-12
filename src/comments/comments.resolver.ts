@@ -6,7 +6,7 @@ import {
   GqlRelations,
   MessageResponse,
   UserFromGql,
-} from '@app/shared';
+} from 'src/common';
 import { Comment } from 'src/entities/comments.entity';
 import { ManyCommentsResponse } from './dto/many-comments.response';
 

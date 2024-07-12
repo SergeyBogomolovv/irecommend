@@ -10,6 +10,11 @@ type MessageResponse {
   message: String!
 }
 
+type VerifyResponse {
+  message: String!
+  email: String!
+}
+
 type Contact {
   id: ID!
   url: String
@@ -85,11 +90,6 @@ type User {
   profileId: String!
   recommendations: [Recommendation!]!
   favorites: [Recommendation!]!
-}
-
-type VerifyResponse {
-  message: String!
-  email: String!
 }
 
 type PaginatedRecommendationResponse {

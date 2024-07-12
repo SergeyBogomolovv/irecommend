@@ -1,4 +1,4 @@
-import { MessageResponse } from '@app/shared';
+import { MessageResponse } from 'src/common';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Recommendation } from 'src/entities/recommendation.entity';
