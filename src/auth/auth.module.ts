@@ -5,13 +5,14 @@ import { TokenService } from './services/token.service';
 import { HashingService } from './services/hashing.service';
 import { UsersModule } from 'src/users/users.module';
 import { AuthResolver } from './auth.resolver';
-import { SharedModule } from '@app/shared';
+import { GqlAuthGuard } from 'src/common';
 
 @Module({
-  imports: [SharedModule, UsersModule],
+  imports: [UsersModule],
   providers: [
     AuthService,
     OtpService,
+    GqlAuthGuard,
     TokenService,
     HashingService,
     AuthResolver,

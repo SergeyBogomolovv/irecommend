@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AddContactDto } from './dto/add-contact.input';
 import { UsersService } from 'src/users/users.service';
 import { FileUpload } from 'graphql-upload-ts';
-import { MessageResponse } from '@app/shared';
+import { MessageResponse } from 'src/common';
 import { Contact, Contacts, contactsUrl } from 'src/entities/contact.entity';
 
 @Injectable()

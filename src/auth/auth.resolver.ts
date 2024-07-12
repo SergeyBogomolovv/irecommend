@@ -6,8 +6,11 @@ import { RegisterInput } from './dto/register.input';
 import { VerifyAccountInput } from './dto/verify.input';
 import { PasswordResetInput } from './dto/password-reset.input';
 import { Response, Request } from 'express';
-import { AccessTokenResponse, MessageResponse } from '@app/shared';
-import { VerifyResponse } from '@app/shared/dto/verify.response';
+import {
+  AccessTokenResponse,
+  MessageResponse,
+  VerifyResponse,
+} from 'src/common';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Resolver()

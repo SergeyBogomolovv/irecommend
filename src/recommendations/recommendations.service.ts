@@ -12,7 +12,7 @@ import { FileUpload } from 'graphql-upload-ts';
 import { S3Service } from 'src/s3/s3.service';
 import { UpdateRecommendationInput } from './dto/update-recommendation.input';
 import { FuseResult } from 'fuse.js';
-import { MessageResponse, RECOMMENDATIONS_LIMIT } from '@app/shared';
+import { MessageResponse, RECOMMENDATIONS_LIMIT } from 'src/common';
 import { Image } from 'src/entities/image.entity';
 import {
   Recommendation,

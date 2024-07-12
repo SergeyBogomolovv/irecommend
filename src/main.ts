@@ -11,7 +11,7 @@ import {
   Logger,
   ValidationPipe,
 } from '@nestjs/common';
-import { GqlExceptionFilter } from '@app/shared';
+import { GqlExceptionFilter } from 'src/common';
 import { DataSource } from 'typeorm';
 
 async function bootstrap() {
