@@ -36,7 +36,7 @@ import { JwtModule } from '@nestjs/jwt';
       validationSchema: Joi.object({
         JWT_SECRET: Joi.string().required(),
 
-        APP_PORT: Joi.string().required(),
+        PORT: Joi.string().required(),
 
         POSTGRES_URL: Joi.string().required(),
 
