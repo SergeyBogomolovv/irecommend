@@ -24,7 +24,6 @@ import { Image } from './entities/image.entity';
 import { Profile } from './entities/profile.entity';
 import { Recommendation } from './entities/recommendation.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -87,7 +86,6 @@ import { AppController } from './app.controller';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/schema.gql',
-      introspection: false,
       context: ({ req, res }) => ({ req, res }),
     }),
     MailModule,
@@ -99,6 +97,5 @@ import { AppController } from './app.controller';
     FavoritesModule,
     CommentsModule,
   ],
-  controllers: [AppController],
 })
 export class AppModule {}
