@@ -24,6 +24,7 @@ import { Image } from './entities/image.entity';
 import { Profile } from './entities/profile.entity';
 import { Recommendation } from './entities/recommendation.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -98,5 +99,6 @@ import { JwtModule } from '@nestjs/jwt';
     FavoritesModule,
     CommentsModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
