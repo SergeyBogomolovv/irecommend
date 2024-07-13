@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { redisStore } from 'cache-manager-redis-yet';
@@ -24,6 +24,7 @@ import { Image } from './entities/image.entity';
 import { Profile } from './entities/profile.entity';
 import { Recommendation } from './entities/recommendation.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { NotFoundMiddleware } from './common/middleware/not-found.middleware';
 
 @Module({
   imports: [
@@ -98,4 +99,8 @@ import { JwtModule } from '@nestjs/jwt';
     CommentsModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(NotFoundMiddleware).exclude('/graphql').forRoutes('*');
+  }
+}
