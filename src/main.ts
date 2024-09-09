@@ -61,8 +61,6 @@ async function bootstrap() {
   );
   app.use(cookieParser());
 
-  await app.listen(config.get('PORT') || 3000, () => {
-    logger.log(`App started on ${config.get('PORT')}`);
-  });
+  await app.listen(4000);
 }
 bootstrap();
