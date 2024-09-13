@@ -7,11 +7,7 @@ dotenv.config();
 const logger = new Logger('DataSource');
 
 export const dataSourceOptions: DataSourceOptions = {
-  password: process.env.POSTGRES_PASSWORD,
-  username: process.env.POSTGRES_USER,
-  database: process.env.POSTGRES_DB,
-  host: process.env.POSTGRES_HOST,
-  port: parseInt(process.env.POSTGRES_PORT),
+  url: process.env.POSTGRES_URL,
   type: 'postgres',
   entities: [join(__dirname, '/entities/**/*.entity.{ts,js}')],
   migrations: [join(__dirname, '/migrations/**/*.{ts,js}')],

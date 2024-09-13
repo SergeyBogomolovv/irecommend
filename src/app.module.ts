@@ -37,11 +37,7 @@ import { NotFoundMiddleware } from './common/middleware/not-found.middleware';
       validationSchema: Joi.object({
         JWT_SECRET: Joi.string().required(),
 
-        POSTGRES_PASSWORD: Joi.string().required(),
-        POSTGRES_USER: Joi.string().required(),
-        POSTGRES_DB: Joi.string().required(),
-        POSTGRES_PORT: Joi.number().required(),
-        POSTGRES_HOST: Joi.string().required(),
+        POSTGRES_URL: Joi.string().required(),
 
         REDIS_HOST: Joi.string().required(),
         REDIS_PORT: Joi.string().required(),
