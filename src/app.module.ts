@@ -39,8 +39,7 @@ import { NotFoundMiddleware } from './common/middleware/not-found.middleware';
 
         POSTGRES_URL: Joi.string().required(),
 
-        REDIS_HOST: Joi.string().required(),
-        REDIS_PORT: Joi.string().required(),
+        REDIS_URL: Joi.string().required(),
 
         MAIL_TRANSPORT: Joi.string().required(),
         MAIL_HOST: Joi.string().required(),
@@ -73,10 +72,7 @@ import { NotFoundMiddleware } from './common/middleware/not-found.middleware';
       useFactory: async (config: ConfigService) => {
         const store = await redisStore({
           ttl: 0,
-          socket: {
-            host: config.get('REDIS_HOST'),
-            port: config.get('REDIS_PORT'),
-          },
+          url: config.get('REDIS_URL'),
         });
         return { store };
       },
