@@ -37,9 +37,14 @@ import { NotFoundMiddleware } from './common/middleware/not-found.middleware';
       validationSchema: Joi.object({
         JWT_SECRET: Joi.string().required(),
 
-        POSTGRES_URL: Joi.string().required(),
+        POSTGRES_USER: Joi.string().required(),
+        POSTGRES_PASSWORD: Joi.string().required(),
+        POSTGRES_DB: Joi.string().required(),
+        POSTGRES_PORT: Joi.number().integer().required(),
+        POSTGRES_HOST: Joi.string().required(),
 
-        REDIS_URL: Joi.string().required(),
+        REDIS_HOST: Joi.string().required(),
+        REDIS_PORT: Joi.number().integer().required(),
 
         MAIL_TRANSPORT: Joi.string().required(),
         MAIL_HOST: Joi.string().required(),
@@ -72,7 +77,10 @@ import { NotFoundMiddleware } from './common/middleware/not-found.middleware';
       useFactory: async (config: ConfigService) => {
         const store = await redisStore({
           ttl: 0,
-          url: config.get('REDIS_URL'),
+          socket: {
+            host: config.get('REDIS_HOST'),
+            port: config.get('REDIS_PORT'),
+          },
         });
         return { store };
       },
